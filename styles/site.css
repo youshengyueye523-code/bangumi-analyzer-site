@@ -1086,10 +1086,11 @@ h3.card-title {
 
 /*
  * 行内代码多为路径与标识符（`GET /api/config`、`scripts/content/versions.js`）。
- * body 上的 overflow-wrap: anywhere 会把它们从中间断开，所以这里保持整块换行。
+ * 这里不用 anywhere：那样会在还有整行空间时就把词从中间断开；
+ * break-word 只在「整行都放不下」时才允许断开（例如很长的 URL）。
  */
 code {
-  white-space: nowrap;
+  overflow-wrap: break-word;
 }
 
 @media (max-width: 719px) {

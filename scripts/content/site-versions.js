@@ -65,7 +65,7 @@ export const websiteVersions = [
       {
         title: '新增',
         items: [
-          '正式发布：网站源码托管在 GitHub 仓库，通过 GitHub Pages 发布正式 HTTPS 地址。',
+          '正式发布：源码托管在 GitHub 仓库 `youshengyueye523-code/bangumi-analyzer-site`，通过 GitHub Pages 发布正式地址 `https://youshengyueye523-code.github.io/bangumi-analyzer-site/`。',
           '分享元信息：`canonical` 与 `og:` / `twitter:` 标签指向正式地址，链接分享时不再是无标题的裸链接。',
           '发布工作流 `.github/workflows/pages.yml`：只上传正式产物子集，开发工具不会出现在公开站点里。',
         ],
