@@ -103,12 +103,18 @@ try {
     if (response.status() >= 400) failedRequests.push(`${response.status()} ${response.url()}`);
   });
 
+  const allText = [];
   for (const [label, route] of ROUTES) {
     await page.goto(`${base}#${route}`, { waitUntil: 'networkidle' });
     await page.waitForTimeout(400);
     const heading = await page.locator('#view h1, #view h2').first().textContent();
     check(Boolean(heading?.trim()), `${label} 渲染出内容（${heading?.trim().slice(0, 24)}）`);
+    allText.push(await page.locator('body').innerText());
   }
+  // v1.5.1 只允许出现在「Public Demo 上线 ≠ Analyzer v1.5.1」这句否定说明里
+  const siteText = allText.join(' ').replaceAll('≠ Analyzer v1.5.1', '');
+  check(siteText.includes('Analyzer v1.5.0'), '全站明确写出 Analyzer v1.5.0');
+  check(!siteText.includes('v1.5.1'), '全站没有把 v1.5.1 写成已存在的版本');
   check(consoleErrors.length === 0, `无控制台报错${consoleErrors.length ? `：${consoleErrors[0]}` : ''}`);
   check(failedRequests.length === 0, `无失败请求${failedRequests.length ? `：${failedRequests[0]}` : ''}`);
   check(
@@ -140,10 +146,18 @@ try {
 
   await page.goto(`${base}#/`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(300);
-  const cards = page.locator('#view .entries.four .entry-card');
+  const cards = page.locator('#view .feature-entries .entry-card');
   const cardCount = await cards.count();
   const links = await cards.evaluateAll((elements) => elements.map((element) => element.getAttribute('href')));
   check(cardCount === features.length, `首页展示全部 ${features.length} 个 Feature 入口（当前 ${cardCount}）`);
+
+  const archiveCards = page.locator('#view .archive-entries .entry-card');
+  const archiveCount = await archiveCards.count();
+  const archiveHrefs = await archiveCards.evaluateAll((elements) =>
+    elements.map((element) => element.closest('a')?.getAttribute('href') ?? ''),
+  );
+  check(archiveCount === 4, `首页档案入口 4 张（当前 ${archiveCount}）`);
+  check(archiveHrefs.includes('#/archive/public-demo'), '首页有一张直达 Public Demo 里程碑的入口卡');
 
   // 真实点击路径
   await cards.first().click();
@@ -155,19 +169,41 @@ try {
     `点击首页入口进入功能页并定位（${clickedHash}）`,
   );
 
-  // 直接打开 / 刷新路径
+  // 直接打开 / 刷新路径：4 个 Feature + 1 个档案锚点
+  const anchors = [...links, ...archiveHrefs.filter((href) => href.startsWith('#/archive/'))];
   let located = 0;
   let problem = '';
-  for (const href of links) {
+  for (const href of anchors) {
     await page.goto(`${base}${href}`, { waitUntil: 'networkidle' });
     await page.reload({ waitUntil: 'networkidle' });
-    await page.waitForTimeout(300);
+    // 站点的平滑滚动要等它落位再测
+    await page.waitForTimeout(900);
     const id = href.split('/').pop();
     const ok = await sectionInView(id);
     if (ok) located += 1;
     else if (!problem) problem = href;
   }
-  check(located === links.length, `四个深链接直接打开 / 刷新都定位正确（${located}/${links.length}${problem ? `；${problem}` : ''}）`);
+  check(
+    located === anchors.length,
+    `深链接直接打开 / 刷新都定位正确（${located}/${anchors.length}${problem ? `；${problem}` : ''}）`,
+  );
+
+  /* 2d) Public Demo 里程碑与版本表述 */
+  await page.goto(`${base}#/archive`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(300);
+  const archiveBody = await page.locator('#view').innerText();
+  check(archiveBody.includes('Public Demo 已正式上线'), '档案页记录 Public Demo 里程碑');
+  check(archiveBody.includes('https://bangumi-analyzer-demo.vercel.app'), '里程碑包含正式地址');
+  check(archiveBody.includes('Analyzer v1.5.0'), '写清 Public Demo 的映射版本');
+  check(archiveBody.includes('部署复盘 · 5 个阶段'), '档案页包含 Vercel 部署复盘（5 个阶段）');
+  check(
+    archiveBody.includes('Public Demo 上线 ≠ Analyzer v1.5.1'),
+    '档案页写明「Public Demo 上线 ≠ Analyzer v1.5.1」',
+  );
+  check(
+    !archiveBody.replaceAll('≠ Analyzer v1.5.1', '').includes('v1.5.1'),
+    '档案页除该否定句外不出现 v1.5.1',
+  );
 
   /* 3) 动效预算：进入首页 1.6s 后不应存在持续运行的动画 */
   await page.goto(`${base}#/`, { waitUntil: 'networkidle' });

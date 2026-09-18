@@ -9,6 +9,16 @@ import { collectDecisions, collectDevlog, findVersion, sortedVersions } from './
 import { features } from './content/features.js';
 import { architecture, disclaimers, running, site, stack } from './content/site.js';
 import { versionPolicy, versionSeries, website, websiteVersions } from './content/site-versions.js';
+import {
+  demoAi,
+  demoBoundary,
+  demoCommits,
+  demoEntities,
+  demoPhases,
+  demoRootCause,
+  demoVersionNote,
+  publicDemo,
+} from './content/public-demo.js';
 
 const view = document.getElementById('view');
 const navLinks = document.getElementById('nav-links');
@@ -129,7 +139,7 @@ function homeView() {
 
     <section class="section reveal">
       ${sectionHead('功能', '四个真正影响长期使用的能力', '下面每一项都来自实际使用中暴露的问题，而不是功能清单。')}
-      <div class="entries four">
+      <div class="entries four feature-entries">
         ${features
           .map(
             (feature) => `
@@ -162,7 +172,7 @@ function homeView() {
         '这里也记录「为什么」',
         '设计取舍、真实做过的实验，以及被回退的方案 —— 都来自开发过程中的真实记录。',
       )}
-      <div class="entries">
+      <div class="entries four archive-entries">
         <div class="entry-card">
           <h3 class="card-title">设计决策 ${decisions.filter((item) => item.kind === 'decision').length} 条</h3>
           <p class="body-text">每个版本里那些「为什么这样做」的判断，以及它解决了什么问题。</p>
@@ -175,6 +185,11 @@ function homeView() {
           <h3 class="card-title">开发日志 ${devlog.length} 条</h3>
           <p class="body-text">真实数据审计、断点扫描、性能实测的过程记录。</p>
         </div>
+        <a class="entry-card" href="#/archive/public-demo">
+          <h3 class="card-title">Public Demo · 已上线</h3>
+          <p class="body-text">${formatDate(publicDemo.date)} 正式上线：基于 Analyzer v${escapeHtml(publicDemo.baseVersion)} 的独立只读展品，公网可访问。</p>
+          <span class="arrow">查看里程碑 →</span>
+        </a>
       </div>
       <p class="body-text" style="margin-top: 18px">
         <a class="button" href="#/archive">进入项目档案</a>
@@ -514,6 +529,10 @@ function archiveView() {
       </div>
     </section>
 
+    ${publicDemoSection()}
+
+    ${demoRetroSection()}
+
     <section class="section quiet">
       ${sectionHead('工程', '项目结构与技术栈', architecture.intro)}
       <div class="grid-2">
@@ -576,6 +595,122 @@ function archiveView() {
 }
 
 /* ------------------------------------------- 本站自己的版本与同步规则 */
+
+/* --------------------------------------- Public Demo：里程碑与部署复盘 */
+
+/**
+ * 公开展品是一个「部署事实」，不是 Analyzer 的新版本：
+ * 所以它不进版本时间线，而是作为项目里程碑记在档案里。
+ */
+function publicDemoSection() {
+  return `
+    <section class="section quiet" id="public-demo">
+      ${sectionHead(
+        '公开',
+        'Public Demo 已正式上线',
+        '产品第一次有了可以对外分享的公网入口：一个只读的公开版本，不连接、也不依赖任何人的本地环境。',
+      )}
+      <div class="grid-2">
+        <div class="panel">
+          <div class="meta-row">
+            <span class="meta-pill">${formatDate(publicDemo.date)}</span>
+            <span class="meta-pill">${escapeHtml(publicDemo.host)}</span>
+            <span class="latest-mark">已上线</span>
+          </div>
+          <h2 class="panel-title" style="margin: 12px 0 8px">${escapeHtml(publicDemo.status)}</h2>
+          <p class="entry-body">${prettyText(publicDemo.summary)}</p>
+          <p class="entry-body" style="margin-top: 14px">
+            <a class="button primary" href="${escapeHtml(publicDemo.url)}" target="_blank" rel="noopener noreferrer">打开 Public Demo ↗</a>
+          </p>
+          <p class="entry-meta" style="margin-top: 12px"><code>${escapeHtml(publicDemo.url)}</code></p>
+        </div>
+
+        <div class="panel">
+          <h2 class="panel-title">三个实体，三条边界</h2>
+          ${demoEntities
+            .map(
+              ([name, version, note]) => `
+          <div class="series-row wide">
+            <span class="series-name">${escapeHtml(name)}</span>
+            <div>
+              <code style="font-size: var(--text-note); color: var(--text)">${escapeHtml(version)}</code>
+              <p class="entry-body">${escapeHtml(note)}</p>
+            </div>
+          </div>`,
+            )
+            .join('')}
+          <p class="entry-body" style="margin-top: 14px">${prettyText(demoVersionNote)}</p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top: 16px">
+        <div class="panel">
+          <h2 class="panel-title">公开边界</h2>
+          ${list(demoBoundary)}
+        </div>
+        <div class="panel">
+          <h2 class="panel-title">AI 的现状</h2>
+          ${list(demoAi)}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+/**
+ * 部署复盘：上层 5 行时间线（普通读者），下层 5 块面板（技术读者）。
+ * 档案页是阅读区，这里不加折叠、不加动效。
+ */
+function demoRetroSection() {
+  return `
+    <section class="section quiet" id="vercel-retro">
+      ${sectionHead(
+        '',
+        `部署复盘 · ${demoPhases.length} 个阶段`,
+        '从第一次部署到生产验收，中间是一段 Vercel 长征：500 地狱 → 200 世界。下面是真实过程，不是事后编的故事。',
+      )}
+      <div class="timeline">
+        ${demoPhases
+          .map(
+            (phase) => `
+        <div class="timeline-item static">
+          <div>
+            <div class="timeline-version">阶段 ${escapeHtml(phase.index)}</div>
+          </div>
+          <div class="timeline-body">
+            <span class="timeline-title">${escapeHtml(phase.title)}</span>
+            <span class="timeline-summary">${escapeHtml(phase.headline)}</span>
+          </div>
+        </div>`,
+          )
+          .join('')}
+      </div>
+
+      <div class="grid-2" style="margin-top: 16px">
+        ${demoPhases
+          .map(
+            (phase) => `
+        <div class="panel">
+          <h2 class="panel-title">${escapeHtml(phase.index)} · ${escapeHtml(phase.title)}</h2>
+          ${list(phase.details)}
+        </div>`,
+          )
+          .join('')}
+      </div>
+
+      <div class="panel" style="margin-top: 16px">
+        <h2 class="panel-title">根因</h2>
+        <p class="entry-body">${prettyText(demoRootCause.statement)}</p>
+        <p class="entry-meta" style="margin-top: 10px">${prettyText(demoRootCause.disclaimer)}</p>
+      </div>
+
+      <div class="panel" style="margin-top: 16px">
+        <h2 class="panel-title">关键提交</h2>
+        ${list(demoCommits)}
+      </div>
+    </section>
+  `;
+}
 
 /**
  * Website 不是一个「只有 Analyzer 历史」的站点：它自己也有版本序列。
@@ -652,6 +787,7 @@ const ROUTES = [
   { pattern: /^\/versions$/, render: () => versionsView(), motion: false },
   { pattern: /^\/versions\/(.+)$/, render: (match) => versionView(decodeURIComponent(match[1])), motion: false },
   { pattern: /^\/archive$/, render: () => archiveView(), motion: false },
+  { pattern: /^\/archive\/(.+)$/, render: () => archiveView(), motion: false },
 ];
 
 function render() {
@@ -675,16 +811,16 @@ function render() {
   setupViewInteractions(matched?.motion ?? false);
   window.scrollTo({ top: 0, behavior: 'auto' });
 
-  /* Feature 深链接（#/features/search 这类）：渲染完再滚到对应区块 */
-  const focus = route.match(/^\/features\/(.+)$/);
-  if (focus) scrollToFeature(decodeURIComponent(focus[1]));
+  /* 深链接（#/features/search、#/archive/public-demo 这类）：渲染完再滚到对应区块 */
+  const focus = route.match(/^\/(?:features|archive)\/(.+)$/);
+  if (focus) scrollToAnchor(decodeURIComponent(focus[1]));
 }
 
 /**
- * 滚到某个 Feature 区块。顶栏是 sticky 的，所以要减去它的高度，
+ * 滚到某个区块。顶栏是 sticky 的，所以要减去它的高度，
  * 否则区块标题会被压在悬浮栏下面。
  */
-function scrollToFeature(id) {
+function scrollToAnchor(id) {
   const target = document.getElementById(id);
   if (!target) return;
   const nav = document.querySelector('.nav-wrap');

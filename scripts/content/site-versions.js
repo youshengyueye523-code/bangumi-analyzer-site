@@ -12,7 +12,7 @@
 
 export const website = {
   name: 'Bangumi Analyzer 产品展示与项目档案网站',
-  version: '1.0.4',
+  version: '1.0.5',
   date: '2026-09-18',
   /** 本站当前记录到的 Analyzer 版本 */
   analyzer: '1.5.0',
@@ -27,8 +27,8 @@ export const versionSeries = [
   ],
   [
     'Website',
-    'v1.0.0 → v1.0.1 → v1.0.2 → v1.0.3 → v1.0.4',
-    '本站：展示与项目档案。版本历史在本节，当前为 v1.0.4。',
+    'v1.0.0 → v1.0.1 → v1.0.2 → v1.0.3 → v1.0.4 → v1.0.5',
+    '本站：展示与项目档案。版本历史在本节，当前为 v1.0.5。',
   ],
 ];
 
@@ -40,6 +40,44 @@ export const versionPolicy = [
 ];
 
 export const websiteVersions = [
+  {
+    version: '1.0.5',
+    date: '2026-09-18',
+    title: 'Public Demo 里程碑与 Vercel 部署复盘',
+    summary:
+      '把「Public Demo 正式上线」这一里程碑，连同这次 Vercel 上线过程里的真实排查，一起同步进项目档案。',
+    sections: [
+      {
+        title: '新增',
+        items: [
+          '档案页新增「Public Demo 已正式上线」：2026-09-18 上线、公网地址 `https://bangumi-analyzer-demo.vercel.app`、部署在 Vercel Hobby、只读展品定位、公开边界与 AI 现状。',
+          '档案页新增「部署复盘 · 5 个阶段」：入口适配 → Root Directory 运行时依赖 → Runtime 500 → 源码级定位 → 最终修复，并附根因说明与 4 条关键提交。',
+          '首页新增第 4 张档案入口卡「Public Demo · 已上线」，可直接跳到档案页对应区块。',
+        ],
+      },
+      {
+        title: '改进',
+        items: [
+          '深链接从 Feature 扩展到档案区块（`#/archive/<id>`），复用同一套实现，没有新增子系统。',
+        ],
+      },
+      {
+        title: '设计取舍',
+        items: [
+          '不写个人数据：里程碑与复盘只记录产品成果、部署方式与公开边界，不引用任何来自公网快照的个人收藏数据。',
+          '现有 8 张真实界面截图保持原样（画面里的聚合数字不重拍、不遮蔽），是否调整留作独立决策。',
+          '复盘分两级呈现：时间线一行给普通读者，阶段面板给技术读者；没有引入折叠组件，也没有新增动效。',
+        ],
+      },
+      {
+        title: '验证',
+        items: [
+          '`verify.mjs` 新增检查：档案页包含里程碑与正式地址、写清 `Analyzer v1.5.0` 的映射关系、首页档案入口为 4 张、`#/archive/public-demo` 定位正确；并断言除了那句「不等于下一个版本」的否定说明之外，全站不会出现不存在的版本号。',
+          '正式地址只读探测：`https://bangumi-analyzer-demo.vercel.app` 的首页与 `/api/health` 都返回 HTTP 200，健康检查报告的版本是 1.5.0。',
+        ],
+      },
+    ],
+  },
   {
     version: '1.0.4',
     date: '2026-09-18',

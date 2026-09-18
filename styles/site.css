@@ -785,6 +785,12 @@ h3.card-title {
   border-color: var(--border);
 }
 
+/* 阶段行不是链接，不要给出「可点击」的悬停反馈 */
+.timeline-item.static:hover {
+  background: transparent;
+  border-color: transparent;
+}
+
 .timeline-version {
   display: flex;
   align-items: baseline;
@@ -1075,6 +1081,11 @@ h3.card-title {
   width: 72px;
   font-size: var(--text-note);
   color: var(--text-subtle);
+}
+
+/* 「三个实体」的名字更长（Local Analyzer / Public Demo），名字列相应加宽 */
+.series-row.wide .series-name {
+  width: 104px;
 }
 
 .series-row > div {
