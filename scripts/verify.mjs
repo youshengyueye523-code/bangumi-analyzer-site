@@ -10,6 +10,7 @@
 import { spawn } from 'node:child_process';
 import { chromium } from '@playwright/test';
 import { website } from './content/site-versions.js';
+import { features } from './content/features.js';
 
 const ANALYZER = process.env.ANALYZER_URL ?? 'http://127.0.0.1:8787';
 const ROUTES = [
@@ -125,6 +126,48 @@ try {
   );
   const archiveText = await page.locator('#view').innerText();
   check(archiveText.includes('Website 版本与同步规则'), '档案页记录本站版本与同步规则');
+
+  /* 2c) 首页四项 Feature 与深链接 */
+  /** 目标区块是否正好滚到「顶栏下方」的位置 */
+  const sectionInView = (id) =>
+    page.evaluate((target) => {
+      const section = document.getElementById(target);
+      if (!section) return false;
+      const nav = document.querySelector('.nav-wrap')?.getBoundingClientRect().height ?? 0;
+      const top = section.getBoundingClientRect().top;
+      return top >= -4 && top <= nav + 60;
+    }, id);
+
+  await page.goto(`${base}#/`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(300);
+  const cards = page.locator('#view .entries.four .entry-card');
+  const cardCount = await cards.count();
+  const links = await cards.evaluateAll((elements) => elements.map((element) => element.getAttribute('href')));
+  check(cardCount === features.length, `首页展示全部 ${features.length} 个 Feature 入口（当前 ${cardCount}）`);
+
+  // 真实点击路径
+  await cards.first().click();
+  await page.waitForTimeout(400);
+  const clickedHash = await page.evaluate(() => location.hash);
+  const clickedId = clickedHash.split('/').pop();
+  check(
+    clickedHash.startsWith('#/features/') && (await sectionInView(clickedId)),
+    `点击首页入口进入功能页并定位（${clickedHash}）`,
+  );
+
+  // 直接打开 / 刷新路径
+  let located = 0;
+  let problem = '';
+  for (const href of links) {
+    await page.goto(`${base}${href}`, { waitUntil: 'networkidle' });
+    await page.reload({ waitUntil: 'networkidle' });
+    await page.waitForTimeout(300);
+    const id = href.split('/').pop();
+    const ok = await sectionInView(id);
+    if (ok) located += 1;
+    else if (!problem) problem = href;
+  }
+  check(located === links.length, `四个深链接直接打开 / 刷新都定位正确（${located}/${links.length}${problem ? `；${problem}` : ''}）`);
 
   /* 3) 动效预算：进入首页 1.6s 后不应存在持续运行的动画 */
   await page.goto(`${base}#/`, { waitUntil: 'networkidle' });

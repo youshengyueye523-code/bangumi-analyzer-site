@@ -12,7 +12,7 @@
 
 export const website = {
   name: 'Bangumi Analyzer 产品展示与项目档案网站',
-  version: '1.0.3',
+  version: '1.0.4',
   date: '2026-09-18',
   /** 本站当前记录到的 Analyzer 版本 */
   analyzer: '1.5.0',
@@ -27,8 +27,8 @@ export const versionSeries = [
   ],
   [
     'Website',
-    'v1.0.0 → v1.0.1 → v1.0.2 → v1.0.3',
-    '本站：展示与项目档案。版本历史在本节，当前为 v1.0.3。',
+    'v1.0.0 → v1.0.1 → v1.0.2 → v1.0.3 → v1.0.4',
+    '本站：展示与项目档案。版本历史在本节，当前为 v1.0.4。',
   ],
 ];
 
@@ -40,6 +40,46 @@ export const versionPolicy = [
 ];
 
 export const websiteVersions = [
+  {
+    version: '1.0.4',
+    date: '2026-09-18',
+    title: '收尾修正：首页入口一致性与 Feature 深链接',
+    summary: '把 v1.0.3 之后发现的三个真实遗留问题处理掉，其他内容保持不变。',
+    sections: [
+      {
+        title: '修复',
+        items: [
+          '首页「四个真正影响长期使用的能力」原来只展示三项：现在四项全部展示，标题、内容与入口数量一致。',
+          'Feature 深链接失效：`#/features#data` 这种写法会被 hash 路由当成不存在的页面；改为 `#/features/<id>` 路由，点首页入口会进入功能页并定位到对应区块。',
+        ],
+      },
+      {
+        title: '改进',
+        items: [
+          '首页四项入口的排布：中屏两列成对、宽屏一行四项，避免第四张卡单独占一行。',
+        ],
+      },
+      {
+        title: '清理',
+        items: [
+          '删除 `.verify-site/review.mjs`：它是 v1.0.3 之前的临时走查脚本，已被 `site/scripts/walkthrough.mjs` 取代，且全仓库没有任何引用。',
+        ],
+      },
+      {
+        title: '验证',
+        items: [
+          '`verify.mjs` 新增两项检查：首页必须有 4 个 Feature 入口；4 个深链接都要落到功能页并滚到对应区块。',
+          '正式地址复核：站点仍发布在既有 URL，内容已更新。',
+        ],
+      },
+      {
+        title: '设计取舍',
+        items: [
+          '没有为 `og:image` 造图：现有真实素材只有 16:10 的 WebP 界面截图，社交平台对 WebP 支持与非常规比例的裁剪都不可控，宁可不放预览图，也不放一张不可靠的图。',
+        ],
+      },
+    ],
+  },
   {
     version: '1.0.3',
     date: '2026-09-18',

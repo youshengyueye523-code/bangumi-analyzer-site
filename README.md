@@ -77,7 +77,7 @@ if (-not (Test-Path $repo)) { git clone https://github.com/youshengyueye523-code
 git -C $repo pull --ff-only
 robocopy site $repo /MIR /XD .git /NFL /NDL /NJH /NJS   # /MIR：让仓库内容与 site/ 完全一致
 git -C $repo add -A
-git -C $repo commit -m "v1.0.3: 视觉返工与正式公网发布"
+git -C $repo commit -m "vX.Y.Z: 本次 Website 版本说明"
 git -C $repo push
 
 # 3. 等 Actions 完成后访问正式地址，确认内容已更新

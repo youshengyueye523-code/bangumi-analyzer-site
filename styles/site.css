@@ -1167,6 +1167,11 @@ code {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  /* 首页「四个能力」是四项，两列成对、宽屏一行四项，避免落单的第四张卡 */
+  .entries.four {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .grid-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1192,6 +1197,12 @@ code {
 
   .story.reverse .story-copy {
     order: 2;
+  }
+}
+
+@media (min-width: 1200px) {
+  .entries.four {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 

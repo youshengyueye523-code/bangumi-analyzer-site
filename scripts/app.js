@@ -129,12 +129,11 @@ function homeView() {
 
     <section class="section reveal">
       ${sectionHead('功能', '四个真正影响长期使用的能力', '下面每一项都来自实际使用中暴露的问题，而不是功能清单。')}
-      <div class="entries">
+      <div class="entries four">
         ${features
-          .slice(0, 3)
           .map(
             (feature) => `
-          <a class="entry-card" href="#/features#${escapeHtml(feature.id)}">
+          <a class="entry-card" href="#/features/${escapeHtml(feature.id)}">
             <span class="kicker"><span class="kicker-index">${escapeHtml(feature.index)}</span>${escapeHtml(feature.kicker)}</span>
             <h3 class="card-title">${escapeHtml(feature.title)}</h3>
             <p class="body-text">${escapeHtml(feature.lead.split('：')[0])}</p>
@@ -648,6 +647,7 @@ function currentRoute() {
 const ROUTES = [
   { pattern: /^\/$/, render: () => homeView(), motion: true },
   { pattern: /^\/features$/, render: () => featuresView(), motion: true },
+  { pattern: /^\/features\/(.+)$/, render: () => featuresView(), motion: false },
   { pattern: /^\/shots$/, render: () => shotsView(), motion: false },
   { pattern: /^\/versions$/, render: () => versionsView(), motion: false },
   { pattern: /^\/versions\/(.+)$/, render: (match) => versionView(decodeURIComponent(match[1])), motion: false },
@@ -674,6 +674,22 @@ function render() {
 
   setupViewInteractions(matched?.motion ?? false);
   window.scrollTo({ top: 0, behavior: 'auto' });
+
+  /* Feature 深链接（#/features/search 这类）：渲染完再滚到对应区块 */
+  const focus = route.match(/^\/features\/(.+)$/);
+  if (focus) scrollToFeature(decodeURIComponent(focus[1]));
+}
+
+/**
+ * 滚到某个 Feature 区块。顶栏是 sticky 的，所以要减去它的高度，
+ * 否则区块标题会被压在悬浮栏下面。
+ */
+function scrollToFeature(id) {
+  const target = document.getElementById(id);
+  if (!target) return;
+  const nav = document.querySelector('.nav-wrap');
+  const offset = (nav?.getBoundingClientRect().height ?? 0) + 16;
+  window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'auto' });
 }
 
 function notFoundView(route) {
