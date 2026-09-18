@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bangumi Analyzer · 产品展示与项目档案</title>
+    <meta
+      name="description"
+      content="Bangumi Analyzer 的产品展示与项目档案空间：本地优先的个人动画数据工具，包含真实界面、功能说明、版本时间线与开发档案。"
+    />
+    <meta name="color-scheme" content="dark light" />
+    <!-- 正式地址：GitHub Pages。绑定自定义域名时需要同步更新 canonical 与 og:url。 -->
+    <link rel="canonical" href="https://youshengyueye523-code.github.io/bangumi-analyzer-site/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Bangumi Analyzer" />
+    <meta property="og:title" content="Bangumi Analyzer · 产品展示与项目档案" />
+    <meta
+      property="og:description"
+      content="本地优先的个人动画数据工具：真实界面、功能说明、版本时间线与开发档案。"
+    />
+    <meta property="og:url" content="https://youshengyueye523-code.github.io/bangumi-analyzer-site/" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="stylesheet" href="styles/tokens.css" />
+    <link rel="stylesheet" href="styles/site.css" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <script>
+      /* 主题引导：在首屏绘制前决定深浅色，避免闪烁。与 Analyzer 一样默认跟随系统。 */
+      (function () {
+        try {
+          var stored = localStorage.getItem('bangumi-site-theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var dark = stored ? stored === 'dark' : prefersDark;
+          document.documentElement.classList.toggle('dark', dark);
+        } catch (error) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- 环境层：静态、不参与注意力竞争 -->
+    <div class="environment" aria-hidden="true"></div>
+
+    <a class="sr-only" href="#view">跳到正文</a>
+
+    <div class="nav-wrap">
+      <div class="shell">
+        <header class="nav">
+          <a class="brand" href="#/" aria-label="Bangumi Analyzer 首页">
+            <span class="brand-mark" aria-hidden="true">B</span>
+            <span>
+              Bangumi Analyzer
+              <span class="brand-sub">产品展示与项目档案</span>
+            </span>
+          </a>
+
+          <button
+            class="icon-button nav-toggle"
+            type="button"
+            id="nav-toggle"
+            aria-expanded="false"
+            aria-controls="nav-links"
+            aria-label="打开导航"
+          >
+            <span aria-hidden="true">☰</span>
+          </button>
+
+          <nav class="nav-links" id="nav-links" aria-label="站点导航">
+            <a class="nav-link" href="#/" data-route="/">首页</a>
+            <a class="nav-link" href="#/features" data-route="/features">功能</a>
+            <a class="nav-link" href="#/shots" data-route="/shots">界面</a>
+            <a class="nav-link" href="#/versions" data-route="/versions">版本</a>
+            <a class="nav-link" href="#/archive" data-route="/archive">档案</a>
+          </nav>
+
+          <button class="icon-button" type="button" id="theme-toggle" aria-label="切换深浅色">
+            <span aria-hidden="true" id="theme-icon">◐</span>
+          </button>
+        </header>
+      </div>
+    </div>
+
+    <main class="shell" id="view" tabindex="-1"></main>
+
+    <footer class="footer">
+      <div class="shell">
+        <div class="footer-grid">
+          <div>
+            <p class="footer-note" id="footer-note"></p>
+            <p class="footer-note" id="footer-version"></p>
+          </div>
+          <div>
+            <p class="footer-note" id="footer-links"></p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="scripts/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,115 @@
+/*
+ * 设计令牌：与 Bangumi Analyzer v1.5.0 同一套 Design DNA。
+ *
+ * 这里是「同一设计家族」的契约 —— 颜色语义、圆角体系、阴影阶梯、材质逻辑、
+ * 动效节奏都与 Analyzer 保持一致；站点在此之上只做两件事：
+ *   1. 增加展示场景需要的尺度（--text-hero、更宽的空间刻度）；
+ *   2. 增加一层「环境」变量（站点是展示空间，需要环境感，但不复制背景板功能）。
+ *
+ * 取色与数值来源：packages/web/src/styles.css（v1.5.0）。
+ * 修改这里之前，请先确认 Analyzer 侧的对应令牌是否也变了。
+ */
+:root {
+  /* 语义色（浅色） */
+  --bg: #f6f7f9;
+  --bg-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f1f3f7;
+  --surface-3: #e8ebf1;
+  --border: #e2e6ee;
+  --border-strong: #cdd4e0;
+  --text: #141926;
+  --text-muted: #5a6474;
+  --text-subtle: #8b94a5;
+  --accent: #3f6cf5;
+  --accent-hover: #345dde;
+  --accent-soft: rgba(63, 108, 245, 0.1);
+  --accent-fg: #ffffff;
+  --success: #0f9d70;
+  --warning: #c07a10;
+  --danger: #d6455c;
+  --info: #2f7fd8;
+
+  /* 阴影阶梯：1 = 贴页面 · 2 = 抬起 · 3 = 脱离文档流 */
+  --shadow-1: 0 1px 2px rgba(16, 22, 38, 0.04), 0 8px 24px -16px rgba(16, 22, 38, 0.2);
+  --shadow-2: 0 2px 6px rgba(16, 22, 38, 0.05), 0 18px 32px -22px rgba(16, 22, 38, 0.24);
+  --shadow-3: 0 16px 40px -16px rgba(16, 22, 38, 0.3), 0 2px 8px rgba(16, 22, 38, 0.06);
+  --shadow-hero: 0 32px 80px -40px rgba(16, 22, 38, 0.45), 0 2px 8px rgba(16, 22, 38, 0.06);
+
+  /* 材质：与 Analyzer 相同的分层逻辑（玻璃只表达悬浮） */
+  --mat-alpha-float: 0.86;
+  --mat-alpha-pop: 0.97;
+  --mat-blur-float: 20px;
+  --mat-blur-pop: 28px;
+  --mat-saturate: 150%;
+  --mat-hairline: rgba(16, 22, 38, 0.07);
+  --mat-edge-card: rgba(255, 255, 255, 0.9);
+  --mat-edge-float: rgba(255, 255, 255, 0.55);
+
+  /* 环境：站点的空间底色（静态，不参与注意力竞争） */
+  --env-1: rgba(63, 108, 245, 0.16);
+  --env-2: rgba(15, 157, 112, 0.1);
+  --env-3: rgba(130, 87, 230, 0.12);
+
+  /* 圆角体系：chip(8) / control(10) / menu(12) / card(14) */
+  --radius-chip: 8px;
+  --radius-control: 10px;
+  --radius-menu: 12px;
+  --radius-card: 14px;
+  --radius-panel: 22px;
+
+  /* 字号：与 Analyzer 相同的 7 级，额外增加站点的展示级 */
+  --text-hero: clamp(32px, 4.6vw, 54px);
+  --text-hero--line-height: 1.08;
+  --text-metric: 24px;
+  --text-display: 22px;
+  --text-title: 18px;
+  --text-section: 15px;
+  --text-card: 14px;
+  --text-body: 13px;
+  --text-note: 12px;
+  --text-caption: 11px;
+
+  /* 动效：与 Analyzer 同一套节奏 */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-1: 120ms;
+  --dur-2: 180ms;
+  --dur-3: 320ms;
+}
+
+.dark {
+  --bg: #090b11;
+  --bg-elevated: #0e1119;
+  --surface: #12151d;
+  --surface-2: #171b24;
+  --surface-3: #1e2330;
+  --border: #232936;
+  --border-strong: #313a4b;
+  --text: #e7eaf1;
+  --text-muted: #9ba4b4;
+  --text-subtle: #6b7486;
+  --accent: #6d8bff;
+  --accent-hover: #8aa1ff;
+  --accent-soft: rgba(109, 139, 255, 0.14);
+  --accent-fg: #0a0c11;
+  --success: #3ddc97;
+  --warning: #f5b544;
+  --danger: #ff6b7f;
+  --info: #63b3ff;
+
+  --shadow-1: 0 1px 0 rgba(255, 255, 255, 0.02), 0 18px 40px -32px rgba(0, 0, 0, 0.9);
+  --shadow-2: 0 1px 0 rgba(255, 255, 255, 0.03), 0 22px 44px -30px rgba(0, 0, 0, 0.95);
+  --shadow-3: 0 28px 60px -24px rgba(0, 0, 0, 0.85), 0 2px 10px rgba(0, 0, 0, 0.5);
+  --shadow-hero: 0 40px 90px -50px rgba(0, 0, 0, 0.95), 0 2px 10px rgba(0, 0, 0, 0.5);
+
+  --mat-alpha-float: 0.82;
+  --mat-alpha-pop: 0.95;
+  --mat-saturate: 135%;
+  --mat-hairline: rgba(255, 255, 255, 0.07);
+  --mat-edge-card: rgba(255, 255, 255, 0.05);
+  --mat-edge-float: rgba(255, 255, 255, 0.09);
+
+  --env-1: rgba(109, 139, 255, 0.2);
+  --env-2: rgba(61, 220, 151, 0.12);
+  --env-3: rgba(177, 140, 255, 0.16);
+}
