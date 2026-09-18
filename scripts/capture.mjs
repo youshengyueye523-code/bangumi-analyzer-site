@@ -7,6 +7,8 @@
  *   1. 只为截图临时把「昵称 / 头像 / 背景」换成中性值，采集结束后**原样恢复**
  *      （背景图片会按内容重新上传，拿回同一个文件名）。
  *   2. 覆盖式写入 site/assets/shots/*.webp，PNG 中间产物不落盘。
+ *   3. 以 viewport 1440×900 + deviceScaleFactor 2 采集，输出 2880×1800（16:10），
+ *      CSS 布局与产品内容不变，只提高像素密度 —— 高分屏下才不糊。
  *
  * 依赖说明：脚本使用仓库根目录已有的 Playwright（devDependency）。
  * 官网本体零依赖；这个脚本只在需要更新截图时手动运行。
@@ -18,7 +20,16 @@ import { chromium } from '@playwright/test';
 const ANALYZER = process.env.ANALYZER_URL ?? 'http://127.0.0.1:8787';
 const OUT = new URL('../assets/shots/', import.meta.url);
 const VIEWPORT = { width: 1440, height: 900 };
-const QUALITY = 0.9;
+/*
+ * 2× 像素密度：CSS 布局完全不变，但输出 2880×1800。
+ * 网站截图取景框最宽会显示到 ~1114px，高分屏下需要 ~2200px 以上的源图才不糊。
+ */
+const SCALE = 2;
+/**
+ * 8 张合计预算约 2.8 MiB。2× 分辨率下 0.9 会让封面密集的收藏库截图超过 ~450 KB/张，
+ * 因此统一用 0.85 —— 清晰度主要来自 2880×1800 的分辨率，而不是这一档质量差。
+ */
+const QUALITY = 0.85;
 
 const PAGES = [
   { id: 'dashboard', path: '/', label: '仪表盘' },
@@ -78,7 +89,11 @@ async function main() {
 
   try {
     for (const theme of ['dark', 'light']) {
-      const context = await browser.newContext({ colorScheme: theme, viewport: VIEWPORT });
+      const context = await browser.newContext({
+        colorScheme: theme,
+        viewport: VIEWPORT,
+        deviceScaleFactor: SCALE,
+      });
       await context.addInitScript((value) => {
         window.localStorage.setItem('bangumi-analyzer-theme', value);
       }, theme);

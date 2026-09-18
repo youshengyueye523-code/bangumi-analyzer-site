@@ -31,7 +31,11 @@ export const stack = [
 
 export const running = [
   { title: '启动本体', command: '双击 start-bangumi.bat（或 pnpm start）', note: '默认 http://127.0.0.1:8787' },
-  { title: '启动本站', command: 'node site/serve.mjs', note: '默认 http://127.0.0.1:8789' },
+  {
+    title: '启动本站',
+    command: 'node serve.mjs',
+    note: '本地预览：默认 http://127.0.0.1:8789，端口被占用时会自动向后顺延并打印实际地址（在 Analyzer 仓库里同一文件是 node site/serve.mjs）',
+  },
   { title: '校验本站', command: 'node site/scripts/verify.mjs', note: '断点 / 溢出 / 控制台报错 / 动效预算' },
   {
     title: '走查本站',

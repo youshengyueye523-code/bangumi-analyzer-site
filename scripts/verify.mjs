@@ -205,6 +205,12 @@ try {
     '档案页除该否定句外不出现 v1.5.1',
   );
 
+  /* 2e) 本地运行说明必须与 serve.mjs 的真实行为一致 */
+  check(
+    archiveBody.includes('node serve.mjs') && archiveBody.includes('127.0.0.1:8789'),
+    '本地运行说明与 serve.mjs 行为一致（node serve.mjs / 127.0.0.1:8789）',
+  );
+
   /* 3) 动效预算：进入首页 1.6s 后不应存在持续运行的动画 */
   await page.goto(`${base}#/`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(1600);
@@ -266,6 +272,31 @@ try {
   await page.waitForTimeout(200);
   const shotSource = await page.locator('[data-shot-stage] img').getAttribute('src');
   check(shotSource?.includes('-light.webp'), `截图可切换主题（当前 ${shotSource}）`);
+
+  /* 6b) 8 张真实截图都必须来自高分辨率源图（取景框最宽 ~1114px，高分屏需要 ~2200px 以上） */
+  const shotSizes = [];
+  for (const theme of ['深色', '浅色']) {
+    await page.locator('[data-viewer]').getByRole('button', { name: theme, exact: true }).click();
+    for (const id of ['dashboard', 'library', 'analysis', 'settings']) {
+      await page.locator(`[data-shot-id="${id}"]`).click();
+      await page
+        .waitForFunction(() => {
+          const image = document.querySelector('[data-shot-stage] img');
+          return Boolean(image?.complete && image.naturalWidth > 0);
+        })
+        .catch(() => {});
+      const size = await page.evaluate(() => {
+        const image = document.querySelector('[data-shot-stage] img');
+        return [image?.naturalWidth ?? 0, image?.naturalHeight ?? 0];
+      });
+      shotSizes.push({ id, theme, width: size[0], height: size[1] });
+    }
+  }
+  const blurry = shotSizes.filter((item) => item.width < 2000);
+  check(
+    blurry.length === 0,
+    `8 张截图源图均 ≥ 2000px 宽（最小 ${Math.min(...shotSizes.map((item) => item.width))}px，共 ${shotSizes.length} 张）`,
+  );
 
   await context.close();
   await browser.close();
