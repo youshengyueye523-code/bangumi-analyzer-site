@@ -28,7 +28,7 @@ const PAGES = [
   ['features', '/features', true],
   ['shots', '/shots', false],
   ['versions', '/versions', false],
-  ['version-182', '/versions/1.8.2', true],
+  ['version-184', '/versions/1.8.4', true],
   ['archive', '/archive', true],
 ];
 const NARROW = [

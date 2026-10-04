@@ -15,14 +15,14 @@ export const website = {
   version: '1.0.9',
   date: '2026-10-04',
   /** 本站当前记录到的 Analyzer 版本 */
-  analyzer: '1.8.2',
+  analyzer: '1.8.4',
 };
 
 /** 两条版本序列的现状（档案页用来说明关系） */
 export const versionSeries = [
   [
     'Analyzer',
-    'v1.0.0 → … → v1.8.2',
+    'v1.0.0 → … → v1.8.4',
     '产品本体：功能、数据与界面。版本历史在时间线与版本页。',
   ],
   [

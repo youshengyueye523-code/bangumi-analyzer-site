@@ -19,7 +19,7 @@ const ROUTES = [
   ['功能', '/features'],
   ['界面', '/shots'],
   ['版本', '/versions'],
-  ['版本详情', '/versions/1.8.2'],
+  ['版本详情', '/versions/1.8.4'],
   ['档案', '/archive'],
 ];
 const WIDTHS = [1920, 1440, 1280, 1024, 768, 600, 480, 420, 375];
@@ -338,10 +338,10 @@ try {
     await page.locator('#view .timeline-item .timeline-version').allTextContents()
   ).map((text) => text.trim().split(/\s+/)[0]);
   check(
-    timelineOrder.slice(0, 4).join(' ') === 'v1.8.2 v1.8.1 v1.8.0 v1.7.0',
-    `时间线顺序为 v1.8.2 → v1.8.1 → v1.8.0 → v1.7.0（实际：${timelineOrder.slice(0, 4).join(' → ')}）`,
+    timelineOrder.slice(0, 4).join(' ') === 'v1.8.4 v1.8.3 v1.8.2 v1.8.1',
+    `时间线顺序为 v1.8.4 → v1.8.3 → v1.8.2 → v1.8.1（实际：${timelineOrder.slice(0, 4).join(' → ')}）`,
   );
-  for (const version of ['1.8.2', '1.8.1', '1.8.0', '1.7.0']) {
+  for (const version of ['1.8.4', '1.8.3', '1.8.2', '1.8.1', '1.8.0', '1.7.0']) {
     await page.goto(`${base}#/versions/${version}`, { waitUntil: 'networkidle' });
     await page.waitForTimeout(150);
     const expected = findVersion(version);

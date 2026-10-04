@@ -25,7 +25,7 @@ export const demoEntities = [
   [
     'Local Analyzer',
     'v1.8.2',
-    '产品本体：私人本地工作环境。公开展品上线时它是 v1.5.0，此后继续演进，当前为 v1.8.2。',
+    '产品本体：私人本地工作环境。公开展品上线时它是 v1.5.0，此后继续演进，当前为 v1.8.4。',
   ],
   [
     'Public Demo',
@@ -37,7 +37,7 @@ export const demoEntities = [
 
 /** 最容易混淆的一句，单独写清楚 */
 export const demoVersionNote =
-  '公开展品对应的是它上线时的 `Analyzer v1.5.0` 快照（2026-09-18）：Local Analyzer 此后继续演进（当前 v1.8.2），公开展品不会随之更新，也不等于 Analyzer 的最新版本。';
+  '公开展品对应的是它上线时的 `Analyzer v1.5.0` 快照（2026-09-18）：Local Analyzer 此后继续演进（当前 v1.8.4），公开展品不会随之更新，也不等于 Analyzer 的最新版本。';
 
 export const demoBoundary = [
   '只读快照：公开版本不开放个人写入，数据只在发布时更新。',
