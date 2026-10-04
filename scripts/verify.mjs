@@ -11,6 +11,7 @@ import { spawn } from 'node:child_process';
 import { chromium } from '@playwright/test';
 import { website } from './content/site-versions.js';
 import { features } from './content/features.js';
+import { findVersion, sortedVersions } from './content/versions.js';
 
 const ANALYZER = process.env.ANALYZER_URL ?? 'http://127.0.0.1:8787';
 const ROUTES = [
@@ -322,6 +323,31 @@ try {
     blurry.length === 0,
     `16 张截图源图均 ≥ 2000px 宽（最小 ${Math.min(...shotSizes.map((item) => item.width))}px，共 ${shotSizes.length} 张）`,
   );
+
+  /* 6c) 版本历史：真实发布 / 维护节点必须分别成立（v1.0.9 纠偏）
+   * v1.8.0 / v1.8.1 / v1.8.2 是三个真实版本，不能被合并成一个阶段条目；
+   * 每个版本页只回答自己版本发生了什么。 */
+  await page.goto(`${base}#/versions`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(200);
+  const timelineText = await page.locator('#view').innerText();
+  check(
+    timelineText.includes(`共 ${sortedVersions().length} 个版本`),
+    `版本时间线写出共 ${sortedVersions().length} 个版本`,
+  );
+  const timelineOrder = (
+    await page.locator('#view .timeline-item .timeline-version').allTextContents()
+  ).map((text) => text.trim().split(/\s+/)[0]);
+  check(
+    timelineOrder.slice(0, 4).join(' ') === 'v1.8.2 v1.8.1 v1.8.0 v1.7.0',
+    `时间线顺序为 v1.8.2 → v1.8.1 → v1.8.0 → v1.7.0（实际：${timelineOrder.slice(0, 4).join(' → ')}）`,
+  );
+  for (const version of ['1.8.2', '1.8.1', '1.8.0', '1.7.0']) {
+    await page.goto(`${base}#/versions/${version}`, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(150);
+    const expected = findVersion(version);
+    const heading = ((await page.locator('#view h1').first().textContent()) ?? '').trim();
+    check(Boolean(expected) && heading === expected.title, `v${version} 版本页回答自己的版本（${heading}）`);
+  }
 
   await context.close();
   await browser.close();
