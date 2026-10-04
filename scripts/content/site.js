@@ -4,7 +4,7 @@ export const site = {
   name: 'Bangumi Analyzer',
   tagline: '本地优先的个人动画数据工具',
   description:
-    '把 Bangumi 收藏完整同步到本机 SQLite，再在其上做检索、统计、画像与双语简介 —— 一个长期使用、可以自己维护的个人数据工具。',
+    '把 Bangumi 收藏完整同步到本机 SQLite，再在其上做检索（含系列 / IP 域内搜索）、统计、画像与双语简介，并逐步具备诊断与治理自己数据的能力 —— 一个长期使用、可以自己维护的个人数据工具。',
   repoNote: '本站是 Bangumi Analyzer 的展示与档案空间，独立于主程序，不参与主程序的构建与运行。',
 };
 
@@ -15,7 +15,7 @@ export const architecture = {
     ['packages/server', 'Fastify API + SQLite（node:sqlite）+ 同步 / 翻译队列 / 静态托管'],
     ['packages/web', 'React + Vite + Tailwind 的前端（设计令牌与组件库）'],
     ['e2e', 'Playwright 端到端与截图走查'],
-    ['docs', '逐版本的验证报告（真实数据审计与回归结果）'],
+    ['docs', '架构 / API 说明与验证报告（真实数据审计与回归结果）'],
     ['site', '本项目：产品展示与项目档案（零依赖静态站）'],
   ],
 };

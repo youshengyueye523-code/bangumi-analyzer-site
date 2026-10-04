@@ -18,7 +18,7 @@ const ROUTES = [
   ['功能', '/features'],
   ['界面', '/shots'],
   ['版本', '/versions'],
-  ['版本详情', '/versions/1.5.0'],
+  ['版本详情', '/versions/1.7.0'],
   ['档案', '/archive'],
 ];
 const WIDTHS = [1920, 1440, 1280, 1024, 768, 600, 480, 420, 375];
@@ -111,10 +111,32 @@ try {
     check(Boolean(heading?.trim()), `${label} 渲染出内容（${heading?.trim().slice(0, 24)}）`);
     allText.push(await page.locator('body').innerText());
   }
-  // v1.5.1 只允许出现在「Public Demo 上线 ≠ Analyzer v1.5.1」这句否定说明里
-  const siteText = allText.join(' ').replaceAll('≠ Analyzer v1.5.1', '');
-  check(siteText.includes('Analyzer v1.5.0'), '全站明确写出 Analyzer v1.5.0');
-  check(!siteText.includes('v1.5.1'), '全站没有把 v1.5.1 写成已存在的版本');
+  /*
+   * 版本守门（v1.0.7 起）：
+   * - 全站必须写出「本站当前记录的 Analyzer 版本」(website.analyzer)；
+   * - 任何 Analyzer 版本号都不得高于这个记录版本 —— 不存在的版本只允许出现在
+   *   历史记录里（历史版本一定 ≤ 当前记录），不依赖硬编码的某一个「未来版本」。
+   *   本站自己的 v1.0.x 序列单独编号，不参与这条比较。
+   */
+  const siteText = allText.join(' ');
+  check(siteText.includes(`Analyzer 版本：v${website.analyzer}`), `全站写出当前记录的 Analyzer v${website.analyzer}`);
+  const recorded = website.analyzer.split('.').map(Number);
+  const claimed = new Set();
+  for (const match of siteText.matchAll(/v(\d+)\.(\d+)\.(\d+)/g)) {
+    const parts = [Number(match[1]), Number(match[2]), Number(match[3])];
+    // Website 自己的版本序列（v1.0.x）不参与 Analyzer 版本比较
+    if (parts[0] === 1 && parts[1] === 0) continue;
+    claimed.add(parts.join('.'));
+  }
+  const tooNew = [...claimed].filter((value) => {
+    const [major, minor, patch] = value.split('.').map(Number);
+    return (
+      major > recorded[0] ||
+      (major === recorded[0] && minor > recorded[1]) ||
+      (major === recorded[0] && minor === recorded[1] && patch > recorded[2])
+    );
+  });
+  check(tooNew.length === 0, `全站没有把未发生的 Analyzer 版本写成已存在（${tooNew.join('、') || '无'}）`);
   check(consoleErrors.length === 0, `无控制台报错${consoleErrors.length ? `：${consoleErrors[0]}` : ''}`);
   check(failedRequests.length === 0, `无失败请求${failedRequests.length ? `：${failedRequests[0]}` : ''}`);
   check(
@@ -194,16 +216,10 @@ try {
   const archiveBody = await page.locator('#view').innerText();
   check(archiveBody.includes('Public Demo 已正式上线'), '档案页记录 Public Demo 里程碑');
   check(archiveBody.includes('https://bangumi-analyzer-demo.vercel.app'), '里程碑包含正式地址');
-  check(archiveBody.includes('Analyzer v1.5.0'), '写清 Public Demo 的映射版本');
+  check(archiveBody.includes('Analyzer v1.5.0 快照'), '写清 Public Demo 对应上线时的 Analyzer v1.5.0 快照');
+  check(archiveBody.includes('公开展品不会随之更新'), '写明公开展品不随 Analyzer 更新');
+  check(!archiveBody.includes('仍然是 v1.5.0'), '不再写「Analyzer 本体仍然是 v1.5.0」');
   check(archiveBody.includes('部署复盘 · 5 个阶段'), '档案页包含 Vercel 部署复盘（5 个阶段）');
-  check(
-    archiveBody.includes('Public Demo 上线 ≠ Analyzer v1.5.1'),
-    '档案页写明「Public Demo 上线 ≠ Analyzer v1.5.1」',
-  );
-  check(
-    !archiveBody.replaceAll('≠ Analyzer v1.5.1', '').includes('v1.5.1'),
-    '档案页除该否定句外不出现 v1.5.1',
-  );
 
   /* 2e) 本地运行说明必须与 serve.mjs 的真实行为一致 */
   check(
@@ -273,11 +289,11 @@ try {
   const shotSource = await page.locator('[data-shot-stage] img').getAttribute('src');
   check(shotSource?.includes('-light.webp'), `截图可切换主题（当前 ${shotSource}）`);
 
-  /* 6b) 8 张真实截图都必须来自高分辨率源图（取景框最宽 ~1114px，高分屏需要 ~2200px 以上） */
+  /* 6b) 12 张真实截图都必须来自高分辨率源图（取景框最宽 ~1114px，高分屏需要 ~2200px 以上） */
   const shotSizes = [];
   for (const theme of ['深色', '浅色']) {
     await page.locator('[data-viewer]').getByRole('button', { name: theme, exact: true }).click();
-    for (const id of ['dashboard', 'library', 'analysis', 'settings']) {
+    for (const id of ['dashboard', 'library', 'series', 'analysis', 'diagnostics', 'settings']) {
       await page.locator(`[data-shot-id="${id}"]`).click();
       await page
         .waitForFunction(() => {
@@ -295,7 +311,7 @@ try {
   const blurry = shotSizes.filter((item) => item.width < 2000);
   check(
     blurry.length === 0,
-    `8 张截图源图均 ≥ 2000px 宽（最小 ${Math.min(...shotSizes.map((item) => item.width))}px，共 ${shotSizes.length} 张）`,
+    `12 张截图源图均 ≥ 2000px 宽（最小 ${Math.min(...shotSizes.map((item) => item.width))}px，共 ${shotSizes.length} 张）`,
   );
 
   await context.close();

@@ -314,7 +314,13 @@ function demoSection() {
 const shots = [
   { id: 'dashboard', title: '仪表盘', note: '12 个关键指标 + 状态 / 评分 / 放送形态分布' },
   { id: 'library', title: '收藏库', note: '卡片与列表双视图，服务端分页与组合筛选' },
+  { id: 'series', title: '系列 / IP', note: '系列与家族的实体、成员，以及域内搜索与命中原因' },
   { id: 'analysis', title: '统计分析', note: '年度趋势、类型与标签、评分偏差、观看习惯' },
+  {
+    id: 'diagnostics',
+    title: '数据中枢',
+    note: '诊断、证据、修复预览与只读治理历史',
+  },
   { id: 'settings', title: '设置 · 外观', note: '主题、背景板与界面材质' },
 ];
 
@@ -869,7 +875,7 @@ const prefersReducedMotion = () =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /**
- * Hero 视差：整站唯一持续响应滚动的运动，幅度很小（最多 14px / 1.6deg）。
+ * Hero 视差：整站唯一持续响应滚动的运动，幅度很小（代码实际值：10px / 1.6deg）。
  * 只在宽屏 + 允许动效时启用；其余情况完全静止。
  */
 function setupHeroParallax() {

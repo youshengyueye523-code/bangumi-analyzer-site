@@ -26,15 +26,18 @@ const VIEWPORT = { width: 1440, height: 900 };
  */
 const SCALE = 2;
 /**
- * 8 张合计预算约 2.8 MiB。2× 分辨率下 0.9 会让封面密集的收藏库截图超过 ~450 KB/张，
- * 因此统一用 0.85 —— 清晰度主要来自 2880×1800 的分辨率，而不是这一档质量差。
+ * 12 张（6 页 × 深浅色）合计预算约 4.2 MiB。2× 分辨率下 0.9 会让封面密集的收藏库
+ * 截图超过 ~450 KB/张，因此统一用 0.85 —— 清晰度主要来自 2880×1800 的分辨率，
+ * 而不是这一档质量差。
  */
 const QUALITY = 0.85;
 
 const PAGES = [
   { id: 'dashboard', path: '/', label: '仪表盘' },
   { id: 'library', path: '/library', label: '收藏库' },
+  { id: 'series', path: '/series', label: '系列 / IP' },
   { id: 'analysis', path: '/analysis', label: '统计分析' },
+  { id: 'diagnostics', path: '/diagnostics', label: '数据中枢' },
   { id: 'settings', path: '/settings?tab=appearance', label: '设置 · 外观' },
 ];
 

@@ -12,23 +12,23 @@
 
 export const website = {
   name: 'Bangumi Analyzer 产品展示与项目档案网站',
-  version: '1.0.6',
-  date: '2026-09-18',
+  version: '1.0.7',
+  date: '2026-10-04',
   /** 本站当前记录到的 Analyzer 版本 */
-  analyzer: '1.5.0',
+  analyzer: '1.7.0',
 };
 
 /** 两条版本序列的现状（档案页用来说明关系） */
 export const versionSeries = [
   [
     'Analyzer',
-    'v1.5.0 → v1.6.0 → …',
+    'v1.0.0 → … → v1.7.0',
     '产品本体：功能、数据与界面。版本历史在时间线与版本页。',
   ],
   [
     'Website',
-    'v1.0.0 → v1.0.1 → v1.0.2 → v1.0.3 → v1.0.4 → v1.0.5 → v1.0.6',
-    '本站：展示与项目档案。版本历史在本节，当前为 v1.0.6。',
+    'v1.0.0 → v1.0.1 → v1.0.2 → v1.0.3 → v1.0.4 → v1.0.5 → v1.0.6 → v1.0.7',
+    '本站：展示与项目档案。版本历史在本节，当前为 v1.0.7。',
   ],
 ];
 
@@ -40,6 +40,60 @@ export const versionPolicy = [
 ];
 
 export const websiteVersions = [
+  {
+    version: '1.0.7',
+    date: '2026-10-04',
+    title: 'Analyzer v1.7.0 产品档案同步',
+    summary:
+      '把版本档案从 Analyzer v1.5.0 同步到 v1.7.0：补齐 7 个版本，重采 6 个真实界面，并修正 Public Demo 的版本映射表述。',
+    sections: [
+      {
+        title: '新增',
+        items: [
+          'Analyzer 版本档案补齐 v1.5.1 / v1.5.2 / v1.5.3 / v1.6.0 / v1.6.1 / v1.6.2 / v1.7.0：每条按站点的档案风格记录真实发生的事实、设计取舍与开发日志，不是完整技术 changelog。',
+          '界面页新增「系列 / IP」与「数据中枢」两个真实界面；截图从 4 页 8 张增加到 6 页 12 张（深浅色各 6 张，仍是 2880×1800）。',
+        ],
+      },
+      {
+        title: '改进',
+        items: [
+          '本站记录的 Analyzer 版本从 v1.5.0 更新为 v1.7.0；首页版本徽标与版本时间线自动跟随最新条目。',
+          '「检索与追溯」能力故事补充 Series / IP 域内搜索这一产品事实。',
+          'Public Demo 的版本映射改写为「对应它上线时的 `Analyzer v1.5.0` 快照，此后 Local Analyzer 继续演进」，不再暗示公开展品与当前 Analyzer 同步。',
+        ],
+      },
+      {
+        title: '修复',
+        items: [
+          '`README.md` 的版本序列、内容层清单、截图数量与路由示例与代码保持一致。',
+          '`app.js` 中视差幅度的过期注释（14px → 代码实际值 10px）。',
+          '`deploy-check.mjs` 的开发工具清单补上 `deploy-check.mjs` 自身与 `WEBSITE_CONSTITUTION.md`。',
+        ],
+      },
+      {
+        title: '设计取舍',
+        items: [
+          '不新增第 5 个 Feature：Series / IP 搜索并入「检索与追溯」；数据中枢 / 治理 / 修复 / Issue History / Franchise 成员与命名治理进入版本档案与档案页 —— 它们回答的是「为什么变成现在这样」。',
+          '不改首页 Hero、导航与信息架构；不发布 Public Demo v1.7，不引入 Cloud 展示；这些留给后续版本统一决定。',
+          '截图仍然是真实画面（含聚合数字），只保证文案层不把个人数据当作产品指标；不做遮蔽、模糊或重绘。',
+        ],
+      },
+      {
+        title: '验证',
+        items: [
+          '`verify.mjs` 的版本断言改为「全站写出当前记录的 Analyzer v1.7.0」，并把「不得出现未发生的版本」改为按记录版本比较的通用守门。',
+          '截图采集前后比对 Analyzer 的 `data/config.json` 哈希与 `/api/health`（版本 + uptime），本地资料与背景原样恢复。',
+        ],
+      },
+      {
+        title: '已知问题',
+        items: [
+          'Public Demo 仍是上线时的 Analyzer v1.5.0 快照，不包含 v1.5.1 之后的能力；是否重新提取属于独立决策。',
+          'v1.5.1–v1.7.0 的开发发生在 Analyzer 工作树中，没有对应 git 提交：这 7 条版本记录的日期来自当时的工作记录与产物时间，而不是提交时间。',
+        ],
+      },
+    ],
+  },
   {
     version: '1.0.6',
     date: '2026-09-18',

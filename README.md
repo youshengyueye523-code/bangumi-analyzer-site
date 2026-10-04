@@ -49,7 +49,7 @@ Windows 上也可以双击 `site/start-site.bat`。换端口：
 | `index.html`、`styles/`、`scripts/app.js`、`scripts/content/`、`assets/` | 站点本体，可直接上传到任意静态托管（GitHub Pages / Netlify / 对象存储 / 内网目录） |
 | `serve.mjs`、`start-site.bat`、`scripts/*.mjs`（capture / verify / walkthrough / deploy-check）、`README.md` | 本地开发与素材工具，部署时可以不带 |
 
-- 路由是 hash 路由（`#/versions/1.5.0`），静态托管**不需要**任何 rewrite / fallback 规则。
+- 路由是 hash 路由（`#/versions/1.7.0`），静态托管**不需要**任何 rewrite / fallback 规则。
 - 资源全部使用相对路径，放在子目录（例如 `https://example.com/site/`）也能正常浏览。
 - 页面不请求任何本地服务：Analyzer 没运行、机器上没装 Node，核心浏览体验依然完整。
 
@@ -90,8 +90,8 @@ git -C $repo push
 本站与 Analyzer 是**两条独立的版本序列**：各自编号、各自维护，版本号不互相推导。
 
 ```
-Analyzer   v1.5.0 → v1.6.0 → …          产品本体：功能、数据与界面
-Website    v1.0.0 → v1.0.1 → v1.0.2     本站：展示与项目档案（当前 v1.0.2）
+Analyzer   v1.0.0 → … → v1.7.0          产品本体：功能、数据与界面
+Website    v1.0.0 → … → v1.0.7          本站：展示与项目档案（当前 v1.0.7）
 ```
 
 | 规则 | 说明 |
@@ -111,8 +111,9 @@ site/
 ├── index.html            站点外壳（导航、环境层、挂载点）
 ├── serve.mjs             零依赖静态服务器（端口隔离）
 ├── start-site.bat        Windows 双击启动
+├── WEBSITE_CONSTITUTION.md  长期规则基线（开发文档，不上线）
 ├── styles/
-│   ├── tokens.css        设计令牌：与 Analyzer v1.5.0 同一套 DNA
+│   ├── tokens.css        设计令牌：与 Analyzer 同一套 DNA（数值自 v1.5.0 起未变）
 │   └── site.css          站点布局与组件（含注意力 / 动效自我约束说明）
 ├── scripts/
 │   ├── app.js            hash 路由 + 视图 + 交互（零依赖 ES Module）
@@ -120,6 +121,7 @@ site/
 │   │   ├── versions.js       Analyzer 的版本档案：新增 / 改进 / 修复 / 决策 / 日志
 │   │   ├── site-versions.js  Website 自己的版本历史与双版本同步规则
 │   │   ├── features.js       功能说明（Feature Story）
+│   │   ├── public-demo.js    Public Demo 里程碑与部署复盘
 │   │   └── site.js           项目结构、技术栈、如何运行、声明
 │   ├── capture.mjs       开发工具：从运行中的 Analyzer 采集真实界面截图
 │   ├── verify.mjs        自检：路由 / 溢出 / 动效预算 / 端口隔离 / 站外请求
@@ -127,7 +129,7 @@ site/
 │   └── deploy-check.mjs  开发工具：独立静态部署验证（产物子集 + 非本机主机名 + 子目录）
 └── assets/
     ├── favicon.svg       浏览器标签图标
-    └── shots/            真实界面截图（深浅色各 4 张，WebP）
+    └── shots/            真实界面截图（6 页 × 深浅色 = 12 张，WebP）
 ```
 
 ## 如何新增内容（不需要改页面代码）
@@ -151,7 +153,7 @@ site/
 原因是截图取景框最宽会显示到约 1114px，高分屏下需要约 2200px 以上的源图才不糊；
 CSS 布局与产品内容不因这条设置改变，只提高像素密度。
 
-- 体积预算：8 张合计约 2.8 MiB 以内；封面密集的收藏库两张目前各约 545 KB（`QUALITY = 0.85`）。
+- 体积预算：12 张（6 页 × 深浅色）合计约 4.2 MiB 以内；封面密集的收藏库两张各约 545 KB（`QUALITY = 0.85`）。
 - **不允许**把现有低分辨率截图放大后当作高清源图，也**不允许**用 AI 放大补细节。
 - 采集会临时把昵称 / 头像 / 背景换成中性值，并在 `finally` 里原样恢复；采集前后应比对
   `data/config.json` 的哈希与 Analyzer 的 `/api/health`（版本 + uptime 单调增长）。

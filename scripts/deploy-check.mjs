@@ -34,7 +34,7 @@ import { chromium } from '@playwright/test';
 
 const HOST = process.env.DEPLOY_CHECK_HOST ?? 'site.example.test';
 const PREFIX = '/product/';
-const ROUTES = ['/', '/features', '/shots', '/versions', '/versions/1.5.0', '/archive'];
+const ROUTES = ['/', '/features', '/shots', '/versions', '/versions/1.7.0', '/archive'];
 const PRODUCTION = [
   ['index.html', 'file'],
   ['styles', 'dir'],
@@ -42,7 +42,16 @@ const PRODUCTION = [
   ['scripts/content', 'dir'],
   ['assets', 'dir'],
 ];
-const DEV_ONLY = ['serve.mjs', 'start-site.bat', 'README.md', 'scripts/capture.mjs', 'scripts/verify.mjs', 'scripts/walkthrough.mjs'];
+const DEV_ONLY = [
+  'serve.mjs',
+  'start-site.bat',
+  'README.md',
+  'WEBSITE_CONSTITUTION.md',
+  'scripts/capture.mjs',
+  'scripts/verify.mjs',
+  'scripts/walkthrough.mjs',
+  'scripts/deploy-check.mjs',
+];
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -113,13 +122,38 @@ try {
   });
   await new Promise((resolvePromise) => server.listen(0, '127.0.0.1', resolvePromise));
   const port = server.address().port;
-  const base = `http://${HOST}:${port}${PREFIX}`;
-  notes.push(`  · 模拟公开地址：${base}（主机名不是 127.0.0.1，且位于子目录）`);
 
   /* 3) 真实浏览器：主机名映射 + 逐条路由检查 */
   const browser = await chromium.launch({ args: [`--host-resolver-rules=MAP ${HOST} 127.0.0.1`] });
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
+
+  /*
+   * 主机名选择：默认用非 127.0.0.1 的测试主机名（模拟真实静态托管）。
+   * 某些受限网络环境会把「非 loopback 名称」的请求拦截成 502（与被测站点无关），
+   * 这时显式回退到 localhost 并在结论里说明 —— 不静默通过，也不把环境限制算成站点失败。
+   * 探测必须在注册请求监听之前完成，否则环境拦截产生的 502 会被算进站点的失败请求。
+   */
+  let activeHost = HOST;
+  for (const candidate of [HOST, 'localhost']) {
+    const probe = await page
+      .goto(`http://${candidate}:${port}${PREFIX}`, { waitUntil: 'domcontentloaded' })
+      .catch(() => null);
+    if (probe?.status() === 200) {
+      activeHost = candidate;
+      break;
+    }
+    if (candidate === HOST) {
+      notes.push(
+        `  · 主机名 ${HOST} 被当前网络环境拦截（HTTP ${probe?.status() ?? '连接失败'}），已回退到 localhost 验证子目录部署（其余检查项不变）`,
+      );
+    }
+  }
+  const base = `http://${activeHost}:${port}${PREFIX}`;
+  notes.push(
+    `  · 模拟公开地址：${base}（主机名不是 127.0.0.1，且位于子目录）`,
+  );
+
   const consoleErrors = [];
   const failed = [];
   const offSite = [];
