@@ -18,7 +18,7 @@ const ROUTES = [
   ['功能', '/features'],
   ['界面', '/shots'],
   ['版本', '/versions'],
-  ['版本详情', '/versions/1.7.0'],
+  ['版本详情', '/versions/1.8.2'],
   ['档案', '/archive'],
 ];
 const WIDTHS = [1920, 1440, 1280, 1024, 768, 600, 480, 420, 375];
@@ -289,11 +289,20 @@ try {
   const shotSource = await page.locator('[data-shot-stage] img').getAttribute('src');
   check(shotSource?.includes('-light.webp'), `截图可切换主题（当前 ${shotSource}）`);
 
-  /* 6b) 12 张真实截图都必须来自高分辨率源图（取景框最宽 ~1114px，高分屏需要 ~2200px 以上） */
+  /* 6b) 16 张真实截图都必须来自高分辨率源图（取景框最宽 ~1114px，高分屏需要 ~2200px 以上） */
   const shotSizes = [];
   for (const theme of ['深色', '浅色']) {
     await page.locator('[data-viewer]').getByRole('button', { name: theme, exact: true }).click();
-    for (const id of ['dashboard', 'library', 'series', 'analysis', 'diagnostics', 'settings']) {
+    for (const id of [
+      'dashboard',
+      'library',
+      'series',
+      'series-detail',
+      'franchise-detail',
+      'analysis',
+      'diagnostics',
+      'settings',
+    ]) {
       await page.locator(`[data-shot-id="${id}"]`).click();
       await page
         .waitForFunction(() => {
@@ -311,7 +320,7 @@ try {
   const blurry = shotSizes.filter((item) => item.width < 2000);
   check(
     blurry.length === 0,
-    `12 张截图源图均 ≥ 2000px 宽（最小 ${Math.min(...shotSizes.map((item) => item.width))}px，共 ${shotSizes.length} 张）`,
+    `16 张截图源图均 ≥ 2000px 宽（最小 ${Math.min(...shotSizes.map((item) => item.width))}px，共 ${shotSizes.length} 张）`,
   );
 
   await context.close();

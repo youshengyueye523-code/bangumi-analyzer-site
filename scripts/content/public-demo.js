@@ -24,20 +24,20 @@ export const publicDemo = {
 export const demoEntities = [
   [
     'Local Analyzer',
-    'v1.7.0',
-    '产品本体：私人本地工作环境。公开展品上线时它是 v1.5.0，此后继续演进，当前为 v1.7.0。',
+    'v1.8.2',
+    '产品本体：私人本地工作环境。公开展品上线时它是 v1.5.0，此后继续演进，当前为 v1.8.2。',
   ],
   [
     'Public Demo',
     'Analyzer v1.5.0 快照',
     '独立只读展品：静态快照 + 只读接口，不连接本地环境，也不单独编号；不随 Analyzer 更新。',
   ],
-  ['Website', 'v1.0.7', '本站：产品展示与项目档案，使用自己的版本序列。'],
+  ['Website', 'v1.0.8', '本站：产品展示与项目档案，使用自己的版本序列。'],
 ];
 
 /** 最容易混淆的一句，单独写清楚 */
 export const demoVersionNote =
-  '公开展品对应的是它上线时的 `Analyzer v1.5.0` 快照（2026-09-18）：Local Analyzer 此后继续演进（当前 v1.7.0），公开展品不会随之更新，也不等于 Analyzer 的最新版本。';
+  '公开展品对应的是它上线时的 `Analyzer v1.5.0` 快照（2026-09-18）：Local Analyzer 此后继续演进（当前 v1.8.2），公开展品不会随之更新，也不等于 Analyzer 的最新版本。';
 
 export const demoBoundary = [
   '只读快照：公开版本不开放个人写入，数据只在发布时更新。',

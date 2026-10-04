@@ -94,7 +94,8 @@ function homeView() {
         <h1 class="hero-title enter delay-1">把 Bangumi 收藏，<br />变成一份属于自己的长期数据</h1>
         <p class="lede enter delay-2">
           本地优先的个人动画数据工具：收藏完整同步到本机 SQLite，在其上做检索、统计、
-          画像与双语简介。断网可用，数据只在自己机器上。
+          实体分析与画像 —— 从「我的整个收藏」一直看到「我与某个 Series / 家族的关系」。
+          断网可用，数据只在自己机器上。
         </p>
         <div class="hero-actions enter delay-2">
           <a class="button primary" href="#/features">看看能做什么</a>
@@ -124,7 +125,7 @@ function homeView() {
           <span class="fact-mark" aria-hidden="true">2</span>
           <div>
             <p class="fact-title">完整而不是够用</p>
-            <p class="body-text">标签不做截断，人员与公司可检索；统计口径互斥，每个数字都能被解释。</p>
+            <p class="body-text">标签不做截断，人员与公司可检索；统计与实体分析口径互斥，实体数字都带样本量、能被解释。</p>
           </div>
         </div>
         <div class="fact">
@@ -314,7 +315,17 @@ function demoSection() {
 const shots = [
   { id: 'dashboard', title: '仪表盘', note: '12 个关键指标 + 状态 / 评分 / 放送形态分布' },
   { id: 'library', title: '收藏库', note: '卡片与列表双视图，服务端分页与组合筛选' },
-  { id: 'series', title: '系列 / IP', note: '系列与家族的实体、成员，以及域内搜索与命中原因' },
+  { id: 'series', title: '系列 / IP', note: '实体、成员与域内搜索；按样本门槛排序（覆盖 / 完成 / 我的评分）' },
+  {
+    id: 'series-detail',
+    title: '系列详情 · 实体分析',
+    note: '覆盖 / 完成 / 状态 / 评分 / 放送时间 / 消费证据，成员逐条可追溯',
+  },
+  {
+    id: 'franchise-detail',
+    title: '家族详情 · 跨系列分析',
+    note: '成员是系列：跨 Series 聚合的覆盖、评分与消费证据',
+  },
   { id: 'analysis', title: '统计分析', note: '年度趋势、类型与标签、评分偏差、观看习惯' },
   {
     id: 'diagnostics',

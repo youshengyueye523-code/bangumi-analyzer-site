@@ -7,7 +7,7 @@
  *   2. 增加一层「环境」变量（站点是展示空间，需要环境感，但不复制背景板功能）。
  *
  * 取色与数值来源：packages/web/src/styles.css —— 自 Analyzer v1.5.0 起未变；
- * Website v1.0.7 已把记录版本同步到 Analyzer v1.7.0，令牌本身保持不变。
+ * Website v1.0.8 已把记录版本同步到 Analyzer v1.8.2（Entity Analysis 阶段）；令牌本身保持不变。
  * 修改这里之前，请先确认 Analyzer 侧的对应令牌是否也变了。
  */
 :root {

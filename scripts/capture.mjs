@@ -26,20 +26,65 @@ const VIEWPORT = { width: 1440, height: 900 };
  */
 const SCALE = 2;
 /**
- * 12 张（6 页 × 深浅色）合计预算约 4.2 MiB。2× 分辨率下 0.9 会让封面密集的收藏库
+ * 16 张（8 页 × 深浅色）合计预算约 4.5 MiB。2× 分辨率下 0.9 会让封面密集的收藏库
  * 截图超过 ~450 KB/张，因此统一用 0.85 —— 清晰度主要来自 2880×1800 的分辨率，
  * 而不是这一档质量差。
  */
 const QUALITY = 0.85;
 
-const PAGES = [
+const STATIC_PAGES = [
   { id: 'dashboard', path: '/', label: '仪表盘' },
   { id: 'library', path: '/library', label: '收藏库' },
-  { id: 'series', path: '/series', label: '系列 / IP' },
+  // v1.8：系列 / IP 列表截图采用带样本门槛排序的视图（覆盖率），与排名能力一致
+  { id: 'series', path: '/series?sort=coverage', label: '系列 / IP（含样本门槛排序）' },
   { id: 'analysis', path: '/analysis', label: '统计分析' },
   { id: 'diagnostics', path: '/diagnostics', label: '数据中枢' },
   { id: 'settings', path: '/settings?tab=appearance', label: '设置 · 外观' },
 ];
+
+/**
+ * v1.8.2：新增两张「实体分析」成品截图。详情页需要具体的实体 key，
+ * 因此从当前真实数据里挑一个信息量足够的实体（不写死 key，换库也能采集）。
+ */
+async function buildPages() {
+  const seriesList = await api('/api/series?sort=coverage&includeSingletons=1&limit=1000');
+  /*
+   * 系列详情优先选一个「有评分样本」的系列（ratedCount ≥ 3）：这样截图里
+   * 覆盖 / 完成 / 状态 / 评分画像四层都能看到真实数字，而不是「无样本」。
+   */
+  const candidates = seriesList.series
+    .filter((item) => item.memberCount >= 5 && item.collectedCount >= 3)
+    .slice(0, 40);
+  let series = candidates[0] ?? seriesList.series[0];
+  for (const item of candidates) {
+    const detail = await api(`/api/series/${encodeURIComponent(item.key)}`);
+    if (
+      (detail.analysis?.rating?.average?.ratedCount ?? 0) >= 3 &&
+      (detail.analysis?.completion?.collectedCount ?? 0) >= 3
+    ) {
+      series = item;
+      break;
+    }
+  }
+  const franchiseList = await api('/api/franchises?sort=rate&limit=500');
+  const franchise =
+    franchiseList.franchises.find((item) => item.seriesCount >= 2 && item.ranking?.rankable) ??
+    franchiseList.franchises.find((item) => item.seriesCount >= 2) ??
+    franchiseList.franchises[0];
+  return [
+    ...STATIC_PAGES,
+    {
+      id: 'series-detail',
+      path: `/series/${encodeURIComponent(series.key)}`,
+      label: `系列详情 · 实体分析（${series.title}）`,
+    },
+    {
+      id: 'franchise-detail',
+      path: `/franchises/${encodeURIComponent(franchise.key)}`,
+      label: `家族详情 · 跨系列分析（${franchise.title}）`,
+    },
+  ];
+}
 
 async function api(path, options) {
   const response = await fetch(`${ANALYZER}${path}`, {
@@ -64,6 +109,7 @@ async function ensureAnalyzer() {
 async function main() {
   await ensureAnalyzer();
   mkdirSync(OUT, { recursive: true });
+  const pages = await buildPages();
 
   /* 1) 记录并在采集期间替换为中性身份（不改变任何业务数据） */
   const original = await api('/api/config');
@@ -102,9 +148,9 @@ async function main() {
       }, theme);
       const page = await context.newPage();
 
-      for (const target of PAGES) {
+      for (const target of pages) {
         await page.goto(`${ANALYZER}${target.path}`, { waitUntil: 'networkidle' });
-        await page.waitForTimeout(900); // 等图表与封面稳定
+        await page.waitForTimeout(1100); // 等图表、封面与分析区块稳定
         const png = await page.screenshot({ type: 'png' });
         const webp = await toWebp(page, png);
         const file = `assets/shots/${target.id}-${theme}.webp`;

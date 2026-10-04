@@ -34,7 +34,7 @@ import { chromium } from '@playwright/test';
 
 const HOST = process.env.DEPLOY_CHECK_HOST ?? 'site.example.test';
 const PREFIX = '/product/';
-const ROUTES = ['/', '/features', '/shots', '/versions', '/versions/1.7.0', '/archive'];
+const ROUTES = ['/', '/features', '/shots', '/versions', '/versions/1.8.2', '/archive'];
 const PRODUCTION = [
   ['index.html', 'file'],
   ['styles', 'dir'],
