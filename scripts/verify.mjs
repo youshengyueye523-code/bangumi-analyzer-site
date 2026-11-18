@@ -8,19 +8,24 @@
  */
 
 import { spawn } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 import { website } from './content/site-versions.js';
 import { features } from './content/features.js';
 import { findVersion, sortedVersions } from './content/versions.js';
 
+const SERVER = fileURLToPath(new URL('../serve.mjs', import.meta.url));
 const ANALYZER = process.env.ANALYZER_URL ?? 'http://127.0.0.1:8787';
 const ROUTES = [
   ['首页', '/'],
   ['功能', '/features'],
   ['界面', '/shots'],
   ['版本', '/versions'],
-  ['版本详情', '/versions/1.8.4'],
+  ['Analyzer v2.0.0', '/versions/2.0.0'],
+  ['Analyzer v1.9.0', '/versions/1.9.0'],
+  ['历史版本详情', '/versions/1.8.4'],
   ['档案', '/archive'],
+  ['Public Demo 说明', '/archive/public-demo'],
 ];
 const WIDTHS = [1920, 1440, 1280, 1024, 768, 600, 480, 420, 375];
 
@@ -34,7 +39,7 @@ const check = (ok, message) => {
 /** 启动临时站点服务器并解析出实际端口 */
 function startSite() {
   return new Promise((resolvePromise, reject) => {
-    const child = spawn(process.execPath, ['site/serve.mjs', '--port=0'], { stdio: ['ignore', 'pipe', 'pipe'] });
+    const child = spawn(process.execPath, [SERVER, '--port=0'], { stdio: ['ignore', 'pipe', 'pipe'] });
     let buffer = '';
     const timer = setTimeout(() => {
       child.kill();
@@ -58,7 +63,7 @@ function startSite() {
 /** 端口隔离：显式请求 8787 时必须被拒绝 */
 function checkPortGuard() {
   return new Promise((resolvePromise) => {
-    const child = spawn(process.execPath, ['site/serve.mjs', '--port=8787'], { stdio: ['ignore', 'pipe', 'pipe'] });
+    const child = spawn(process.execPath, [SERVER, '--port=8787'], { stdio: ['ignore', 'pipe', 'pipe'] });
     let output = '';
     child.stdout.on('data', (chunk) => (output += chunk.toString()));
     child.stderr.on('data', (chunk) => (output += chunk.toString()));
@@ -93,6 +98,7 @@ try {
   page.on('console', (message) => {
     if (message.type() === 'error') consoleErrors.push(message.text());
   });
+  page.on('pageerror', (error) => consoleErrors.push(error.message));
   page.on('requestfailed', (request) => failedRequests.push(request.url()));
   page.on('request', (request) => {
     const url = request.url();
@@ -117,7 +123,7 @@ try {
    * - 全站必须写出「本站当前记录的 Analyzer 版本」(website.analyzer)；
    * - 任何 Analyzer 版本号都不得高于这个记录版本 —— 不存在的版本只允许出现在
    *   历史记录里（历史版本一定 ≤ 当前记录），不依赖硬编码的某一个「未来版本」。
-   *   本站自己的 v1.0.x 序列单独编号，不参与这条比较。
+   *   本站自己的序列单独编号；两条当前版本另行核对。
    */
   const siteText = allText.join(' ');
   check(siteText.includes(`Analyzer 版本：v${website.analyzer}`), `全站写出当前记录的 Analyzer v${website.analyzer}`);
@@ -138,12 +144,6 @@ try {
     );
   });
   check(tooNew.length === 0, `全站没有把未发生的 Analyzer 版本写成已存在（${tooNew.join('、') || '无'}）`);
-  check(consoleErrors.length === 0, `无控制台报错${consoleErrors.length ? `：${consoleErrors[0]}` : ''}`);
-  check(failedRequests.length === 0, `无失败请求${failedRequests.length ? `：${failedRequests[0]}` : ''}`);
-  check(
-    offSiteRequests.length === 0,
-    `全程没有站外请求${offSiteRequests.length ? `：${offSiteRequests[0]}` : ''}`,
-  );
 
   /* 2b) 本站自己的版本标识与同步规则 */
   await page.goto(`${base}#/archive`, { waitUntil: 'networkidle' });
@@ -155,6 +155,7 @@ try {
   );
   const archiveText = await page.locator('#view').innerText();
   check(archiveText.includes('Website 版本与同步规则'), '档案页记录本站版本与同步规则');
+  check(archiveText.includes('撤回双审计展示') && archiveText.includes('撤回 AI 可见性限制'), '档案页自动收录两项真实回退');
 
   /* 2c) 首页四项 Feature 与深链接 */
   /** 目标区块是否正好滚到「顶栏下方」的位置 */
@@ -220,6 +221,10 @@ try {
   check(archiveBody.includes('Analyzer v1.5.0 快照'), '写清 Public Demo 对应上线时的 Analyzer v1.5.0 快照');
   check(archiveBody.includes('公开展品不会随之更新'), '写明公开展品不随 Analyzer 更新');
   check(!archiveBody.includes('仍然是 v1.5.0'), '不再写「Analyzer 本体仍然是 v1.5.0」');
+  const demoLink = page.getByRole('link', { name: /打开 Public Demo/ });
+  check((await demoLink.getAttribute('href')) === 'https://bangumi-analyzer-demo.vercel.app' &&
+    (await demoLink.getAttribute('target')) === '_blank' &&
+    (await demoLink.getAttribute('rel')) === 'noopener noreferrer', 'Public Demo 保持安全外链，不嵌入或接入数据');
   check(archiveBody.includes('部署复盘 · 5 个阶段'), '档案页包含 Vercel 部署复盘（5 个阶段）');
 
   /* 2e) 本地运行说明必须与 serve.mjs 的真实行为一致 */
@@ -338,17 +343,21 @@ try {
     await page.locator('#view .timeline-item .timeline-version').allTextContents()
   ).map((text) => text.trim().split(/\s+/)[0]);
   check(
-    timelineOrder.slice(0, 4).join(' ') === 'v1.8.4 v1.8.3 v1.8.2 v1.8.1',
-    `时间线顺序为 v1.8.4 → v1.8.3 → v1.8.2 → v1.8.1（实际：${timelineOrder.slice(0, 4).join(' → ')}）`,
+    timelineOrder.slice(0, 6).join(' ') === 'v2.0.0 v1.9.0 v1.8.4 v1.8.3 v1.8.2 v1.8.1',
+    `时间线顺序为 v2.0.0 → v1.9.0 → v1.8.4 → v1.8.3 → v1.8.2 → v1.8.1（实际：${timelineOrder.slice(0, 6).join(' → ')}）`,
   );
-  for (const version of ['1.8.4', '1.8.3', '1.8.2', '1.8.1', '1.8.0', '1.7.0']) {
+  for (const version of ['2.0.0', '1.9.0', '1.8.4', '1.8.3', '1.8.2', '1.8.1', '1.8.0', '1.7.0']) {
     await page.goto(`${base}#/versions/${version}`, { waitUntil: 'networkidle' });
     await page.waitForTimeout(150);
     const expected = findVersion(version);
     const heading = ((await page.locator('#view h1').first().textContent()) ?? '').trim();
-    check(Boolean(expected) && heading === expected.title, `v${version} 版本页回答自己的版本（${heading}）`);
+    check(Boolean(expected) && heading === expected.title && (await page.title()).includes(`v${version} ${expected.title}`),
+      `v${version} 版本页和标签标题一致（${heading}）`);
   }
 
+  check(consoleErrors.length === 0, `无控制台报错${consoleErrors.length ? `：${consoleErrors[0]}` : ''}`);
+  check(failedRequests.length === 0, `无失败请求${failedRequests.length ? `：${failedRequests[0]}` : ''}`);
+  check(offSiteRequests.length === 0, `全程没有站外请求${offSiteRequests.length ? `：${offSiteRequests[0]}` : ''}`);
   await context.close();
   await browser.close();
 } finally {

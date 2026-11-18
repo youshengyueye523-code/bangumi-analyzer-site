@@ -49,7 +49,7 @@ Windows 上也可以双击 `site/start-site.bat`。换端口：
 | `index.html`、`styles/`、`scripts/app.js`、`scripts/content/`、`assets/` | 站点本体，可直接上传到任意静态托管（GitHub Pages / Netlify / 对象存储 / 内网目录） |
 | `serve.mjs`、`start-site.bat`、`scripts/*.mjs`（capture / verify / walkthrough / deploy-check）、`README.md` | 本地开发与素材工具，部署时可以不带 |
 
-- 路由是 hash 路由（`#/versions/1.8.2`），静态托管**不需要**任何 rewrite / fallback 规则。
+- 路由是 hash 路由（`#/versions/2.0.0`），静态托管**不需要**任何 rewrite / fallback 规则。
 - 资源全部使用相对路径，放在子目录（例如 `https://example.com/site/`）也能正常浏览。
 - 页面不请求任何本地服务：Analyzer 没运行、机器上没装 Node，核心浏览体验依然完整。
 
@@ -72,26 +72,26 @@ node site/scripts/deploy-check.mjs
 node site/scripts/walkthrough.mjs      # 走查截图，人工看一眼
 
 # 2. 同步到官网仓库（仓库根目录 = 站点根目录）
-$repo = "$env:TEMP\bangumi-analyzer-site"
-if (-not (Test-Path $repo)) { git clone https://github.com/youshengyueye523-code/bangumi-analyzer-site $repo }
-git -C $repo pull --ff-only
-robocopy site $repo /MIR /XD .git /NFL /NDL /NJH /NJS   # /MIR：让仓库内容与 site/ 完全一致
-git -C $repo add -A
+git -C $repo status --short --branch  # $repo 指向已核对的官网独立 checkout
+# 确认远端 main 与本地基线，比较 site/ 与官网仓库后，只复制本次明确发布的文件。
+# 仅暂存这些文件；如果已有未提交成果，先保全，不用 /MIR 或 git add -A。
+git -C $repo diff --cached --stat
 git -C $repo commit -m "vX.Y.Z: 本次 Website 版本说明"
 git -C $repo push
 
 # 3. 等 Actions 完成后访问正式地址，确认内容已更新
 ```
 
-`/MIR` 会删除仓库里 site/ 已不存在的文件（镜像语义），执行前请确认 `$repo` 指向官网仓库。
+若已有 checkout 不干净，使用干净的隔离 clone 承接发布，保留原副本；不得顺手覆盖或删除与发布无关的文件。
 
 ## 版本与同步
 
 本站与 Analyzer 是**两条独立的版本序列**：各自编号、各自维护，版本号不互相推导。
 
 ```
-Analyzer   v1.0.0 → … → v1.8.4          产品本体：功能、数据与界面
-Website    v1.0.0 → … → v1.0.9          本站：展示与项目档案（当前 v1.0.9）
+Analyzer   v1.0.0 → … → v1.8.4 → v1.9.0 → v2.0.0   产品本体（私人 Local）
+Website    v1.0.0 → … → v1.0.9 → v1.1.0            本站：展示与项目档案
+Public Demo  Analyzer v1.5.0 快照                  独立只读公开展品
 ```
 
 | 规则 | 说明 |
@@ -147,6 +147,8 @@ site/
 
 档案页会自动汇总所有版本的 `decisions` 与 `devlog`，因此**不需要维护两份内容**。
 
+v1.1.0 的两个 Analyzer 节点分别以正式 Local 切换日排入时间线，用户签收和同版本热修另记在开发日志；未把内部候选或局部热修当成新版本。维护验证使用 Playwright 的 Chromium；站点运行本身不需要它。
+
 ### 重新采集界面截图时的约定
 
 `capture.mjs` 以 **viewport 1440×900 + `deviceScaleFactor: 2`** 采集，输出 **2880×1800**（16:10）。
@@ -155,6 +157,7 @@ CSS 布局与产品内容不因这条设置改变，只提高像素密度。
 
 - 体积预算：16 张（8 页 × 深浅色）合计约 4.5 MiB 以内；封面密集的收藏库两张各约 545 KB（`QUALITY = 0.85`）。
 - **不允许**把现有低分辨率截图放大后当作高清源图，也**不允许**用 AI 放大补细节。
+- v1.1.0 更新统计分析与数据中枢（各深浅两张）：使用 v2.0.0 实际构建、独立合成数据与同一取景／编码规格，未读写私人收藏或 Local 配置。其余画面保留并标为历史。
 - 采集会临时把昵称 / 头像 / 背景换成中性值，并在 `finally` 里原样恢复；采集前后应比对
   `data/config.json` 的哈希与 Analyzer 的 `/api/health`（版本 + uptime 单调增长）。
 

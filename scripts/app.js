@@ -20,6 +20,7 @@ import {
   publicDemo,
 } from './content/public-demo.js';
 
+const defaultTitle = document.title;
 const view = document.getElementById('view');
 const navLinks = document.getElementById('nav-links');
 const navToggle = document.getElementById('nav-toggle');
@@ -93,9 +94,7 @@ function homeView() {
         </span>
         <h1 class="hero-title enter delay-1">把 Bangumi 收藏，<br />变成一份属于自己的长期数据</h1>
         <p class="lede enter delay-2">
-          本地优先的个人动画数据工具：收藏完整同步到本机 SQLite，在其上做检索、统计、
-          实体分析与画像 —— 从「我的整个收藏」一直看到「我与某个 Series / 家族的关系」。
-          断网可用，数据只在自己机器上。
+          ${escapeHtml(site.homeLead)}
         </p>
         <div class="hero-actions enter delay-2">
           <a class="button primary" href="#/features">看看能做什么</a>
@@ -106,7 +105,7 @@ function homeView() {
       <div class="hero-stage enter delay-1">
         ${device({ src: 'assets/shots/dashboard-dark.webp', alt: 'Bangumi Analyzer 仪表盘（深色）' })}
         <figcaption class="device-caption">
-          <span>真实界面截图 · 深色主题</span>
+          <span>历史界面截图 · 深色主题</span>
           <span>所有分析都读取本地数据库</span>
         </figcaption>
       </div>
@@ -114,27 +113,14 @@ function homeView() {
 
     <section class="section quiet reveal">
       <div class="facts">
+        ${site.homeFacts.map(([title, body], index) => `
         <div class="fact">
-          <span class="fact-mark" aria-hidden="true">1</span>
+          <span class="fact-mark" aria-hidden="true">${index + 1}</span>
           <div>
-            <p class="fact-title">本地优先</p>
-            <p class="body-text">数据存在本机 SQLite；封面缓存到本地，断网也能正常浏览与分析。</p>
+            <p class="fact-title">${escapeHtml(title)}</p>
+            <p class="body-text">${escapeHtml(body)}</p>
           </div>
-        </div>
-        <div class="fact">
-          <span class="fact-mark" aria-hidden="true">2</span>
-          <div>
-            <p class="fact-title">完整而不是够用</p>
-            <p class="body-text">标签不做截断，人员与公司可检索；统计与实体分析口径互斥，实体数字都带样本量、能被解释。</p>
-          </div>
-        </div>
-        <div class="fact">
-          <span class="fact-mark" aria-hidden="true">3</span>
-          <div>
-            <p class="fact-title">可以自己维护</p>
-            <p class="body-text">Node + SQLite + React，无 ORM、无云服务；同步、备份与导入导出都在本机完成。</p>
-          </div>
-        </div>
+        </div>`).join('')}
       </div>
     </section>
 
@@ -326,11 +312,11 @@ const shots = [
     title: '家族详情 · 跨系列分析',
     note: '成员是系列：跨 Series 聚合的覆盖、评分与消费证据',
   },
-  { id: 'analysis', title: '统计分析', note: '年度趋势、类型与标签、评分偏差、观看习惯' },
+  { id: 'analysis', title: '统计分析', note: 'v2.0.0 示例 · 年度趋势：统一精读范围、摘要和归集数量' },
   {
     id: 'diagnostics',
     title: '数据中枢',
-    note: '诊断、证据、修复预览与只读治理历史',
+    note: 'v2.0.0 示例 · 数据中枢：一次本地观察的范围、状态和模块结果',
   },
   { id: 'settings', title: '设置 · 外观', note: '主题、背景板与界面材质' },
 ];
@@ -341,7 +327,7 @@ function shotsView() {
       <span class="kicker">界面</span>
       <h1 class="hero-title" style="font-size: clamp(28px, 3.4vw, 40px)">真实界面，不是设计稿</h1>
       <p class="lede">
-        下面每一张都是程序真实渲染后截取的画面；可以切换深色 / 浅色，或点缩略图切换页面。
+        统计分析、数据中枢是 v2.0.0 用示例数据实际运行的画面；其余保留历史实机截图。所有画面均可切换深色 / 浅色。
       </p>
     </div>
 
@@ -813,6 +799,10 @@ function render() {
   const base = route.split('#')[0];
 
   view.innerHTML = matched ? matched.render(base.match(matched.pattern) ?? []) : notFoundView(route);
+
+  const versionRoute = /^\/versions\/([^/]+)$/.exec(base);
+  const entry = versionRoute && findVersion(versionRoute[1]);
+  document.title = entry ? `v${entry.version} ${entry.title} · ${site.name}` : defaultTitle;
 
   // 导航高亮
   for (const link of navLinks.querySelectorAll('.nav-link')) {

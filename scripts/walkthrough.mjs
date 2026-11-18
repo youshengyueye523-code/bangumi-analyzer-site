@@ -16,6 +16,7 @@
 
 import { mkdirSync } from 'node:fs';
 import { spawn } from 'node:child_process';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 
@@ -28,13 +29,18 @@ const PAGES = [
   ['features', '/features', true],
   ['shots', '/shots', false],
   ['versions', '/versions', false],
+  ['version-200', '/versions/2.0.0', true],
+  ['version-190', '/versions/1.9.0', true],
   ['version-184', '/versions/1.8.4', true],
+  ['public-demo', '/archive/public-demo', false],
   ['archive', '/archive', true],
 ];
 const NARROW = [
   ['home-375', '/'],
   ['features-375', '/features'],
   ['versions-375', '/versions'],
+  ['version-200-375', '/versions/2.0.0'],
+  ['version-190-375', '/versions/1.9.0'],
 ];
 
 /** 启动临时站点服务器（系统分配端口，不占用开发和 Analyzer 的端口） */
@@ -91,7 +97,14 @@ try {
       await page.goto(`${base}#${route}`, { waitUntil: 'networkidle' });
       await page.waitForTimeout(800);
       await revealAll(page);
-      await page.screenshot({ path: `${OUT}${name}-${theme}.png`, fullPage });
+      if (route === '/archive/public-demo') {
+        // revealAll 回到页首；深链接走查应拍到它实际定位的里程碑。
+        await page.locator('#public-demo').evaluate((section) => {
+          const nav = document.querySelector('.nav-wrap')?.getBoundingClientRect().height ?? 0;
+          window.scrollTo({ top: section.getBoundingClientRect().top + scrollY - nav - 16, behavior: 'instant' });
+        });
+      }
+      await page.screenshot({ path: join(OUT, `${name}-${theme}.png`), fullPage });
     }
     await context.close();
   }
@@ -102,7 +115,7 @@ try {
     await narrowPage.goto(`${base}#${route}`, { waitUntil: 'networkidle' });
     await narrowPage.waitForTimeout(600);
     await revealAll(narrowPage);
-    await narrowPage.screenshot({ path: `${OUT}${name}.png` });
+    await narrowPage.screenshot({ path: join(OUT, `${name}.png`) });
   }
   await narrow.close();
   await browser.close();

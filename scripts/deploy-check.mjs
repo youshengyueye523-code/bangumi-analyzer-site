@@ -30,11 +30,13 @@ import {
 import { createServer } from 'node:http';
 import { tmpdir } from 'node:os';
 import { dirname, extname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 
+const SITE = fileURLToPath(new URL('../', import.meta.url));
 const HOST = process.env.DEPLOY_CHECK_HOST ?? 'site.example.test';
 const PREFIX = '/product/';
-const ROUTES = ['/', '/features', '/shots', '/versions', '/versions/1.8.4', '/archive'];
+const ROUTES = ['/', '/features', '/shots', '/versions', '/versions/2.0.0', '/versions/1.9.0', '/versions/1.8.4', '/archive', '/archive/public-demo'];
 const PRODUCTION = [
   ['index.html', 'file'],
   ['styles', 'dir'],
@@ -73,7 +75,7 @@ const htdocs = join(root, 'htdocs');
 try {
   /* 1) 只复制正式产物子集 */
   for (const [entry, kind] of PRODUCTION) {
-    const from = join('site', entry);
+    const from = join(SITE, entry);
     const to = join(htdocs, entry);
     mkdirSync(kind === 'dir' ? to : dirname(to), { recursive: true });
     cpSync(from, to, { recursive: true });

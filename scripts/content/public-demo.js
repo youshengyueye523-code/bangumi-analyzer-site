@@ -5,6 +5,8 @@
  * 边界：本站不写任何个人收藏数据（收藏数、评分、时长、画像结论都不属于项目档案）。
  */
 
+import { website } from './site-versions.js';
+
 export const publicDemo = {
   date: '2026-09-18',
   status: 'Public Demo 已正式上线，生产环境验收通过',
@@ -24,20 +26,20 @@ export const publicDemo = {
 export const demoEntities = [
   [
     'Local Analyzer',
-    'v1.8.2',
-    '产品本体：私人本地工作环境。公开展品上线时它是 v1.5.0，此后继续演进，当前为 v1.8.4。',
+    `v${website.analyzer}`,
+    `产品本体：私人本地工作环境。公开展品上线时它是 v${publicDemo.baseVersion}，此后独立演进；当前已完成私人 Local 验收。`,
   ],
   [
     'Public Demo',
-    'Analyzer v1.5.0 快照',
+    `Analyzer v${publicDemo.baseVersion} 快照`,
     '独立只读展品：静态快照 + 只读接口，不连接本地环境，也不单独编号；不随 Analyzer 更新。',
   ],
-  ['Website', 'v1.0.9', '本站：产品展示与项目档案，使用自己的版本序列。'],
+  ['Website', `v${website.version}`, '本站：产品展示与项目档案，使用自己的版本序列。'],
 ];
 
 /** 最容易混淆的一句，单独写清楚 */
 export const demoVersionNote =
-  '公开展品对应的是它上线时的 `Analyzer v1.5.0` 快照（2026-09-18）：Local Analyzer 此后继续演进（当前 v1.8.4），公开展品不会随之更新，也不等于 Analyzer 的最新版本。';
+  `公开展品对应它上线时的 Analyzer v${publicDemo.baseVersion} 快照（${publicDemo.date}）。Local Analyzer 已演进到 v${website.analyzer}；公开展品不会随之更新。`;
 
 export const demoBoundary = [
   '只读快照：公开版本不开放个人写入，数据只在发布时更新。',
