@@ -1,56 +1,73 @@
 /**
- * Public Demo：里程碑与部署复盘（2026-09-18 正式上线）。
+ * Public Demo：里程碑与部署复盘（2026-09-18 首发 v1.5.0，2026-11-18 升级至 v2.0.0）。
  *
- * 只记录真实发生过的过程，内容来自这次部署本身与提交记录。
+ * 只记录真实发生过的过程，内容来自部署本身与提交记录。
  * 边界：本站不写任何个人收藏数据（收藏数、评分、时长、画像结论都不属于项目档案）。
  */
 
 import { website } from './site-versions.js';
 
 export const publicDemo = {
-  date: '2026-09-18',
-  status: 'Public Demo 已正式上线，生产环境验收通过',
+  date: '2026-11-18',
+  initialDate: '2026-09-18',
+  status: 'Public Demo 已升级至 Analyzer v2.0.0，生产环境验收通过',
   url: 'https://bangumi-analyzer-demo.vercel.app',
   host: 'Vercel Hobby',
-  baseVersion: '1.5.0',
+  baseVersion: '2.0.0',
+  initialVersion: '1.5.0',
   summary:
-    '产品的第一个公网入口：基于上线时的 Local Analyzer v1.5.0 的独立只读展品，产品主要功能可以实际展示，不连接、也不依赖任何人的本地环境。',
+    '2026 年 9 月 18 日基于 Analyzer v1.5.0 首次上线；2026 年 11 月 18 日独立升级至 Analyzer v2.0.0（Schema 15 只读快照）。覆盖收藏浏览与检索、时间趋势、Series / 家族分析、静态 AI 画像及数据中枢只读诊断展示，不连接、也不依赖任何人的本地环境。',
 };
 
 /**
  * 三个实体：本地本体 / 公开展品 / 本站 —— 版本关系在这里说清楚。
  *
- * Local Analyzer 会继续演进，而公开展品停留在上线时的快照：
+ * Local Analyzer 会继续演进，而公开展品停留在最近一次独立发布时的快照：
  * 这张表必须让「快照版本」与「当前本体版本」一眼可分。
  */
 export const demoEntities = [
   [
     'Local Analyzer',
     `v${website.analyzer}`,
-    `产品本体：私人本地工作环境。公开展品上线时它是 v${publicDemo.baseVersion}，此后独立演进；当前已完成私人 Local 验收。`,
+    '产品本体：私人本地工作环境，已完成 v2.0.0 正式迁移与最终验收，独立演进。',
   ],
   [
     'Public Demo',
     `Analyzer v${publicDemo.baseVersion} 快照`,
-    '独立只读展品：静态快照 + 只读接口，不连接本地环境，也不单独编号；不随 Analyzer 更新。',
+    `独立只读展品：${publicDemo.initialDate} 首发于 v${publicDemo.initialVersion}，${publicDemo.date} 独立升级至 v${publicDemo.baseVersion} 快照；不单独编号，也不会随 Local 自动更新。`,
   ],
   ['Website', `v${website.version}`, '本站：产品展示与项目档案，使用自己的版本序列。'],
 ];
 
 /** 最容易混淆的一句，单独写清楚 */
 export const demoVersionNote =
-  `公开展品对应它上线时的 Analyzer v${publicDemo.baseVersion} 快照（${publicDemo.date}）。Local Analyzer 已演进到 v${website.analyzer}；公开展品不会随之更新。`;
+  `公开展品当前对应 ${publicDemo.date} 独立升级后的 Analyzer v${publicDemo.baseVersion} 快照（${publicDemo.initialDate} 首次上线时为 v${publicDemo.initialVersion} 快照）。Local Analyzer 后续继续演进时，公开展品不会随之更新。`;
 
 export const demoBoundary = [
-  '只读快照：公开版本不开放个人写入，数据只在发布时更新。',
-  '不持有 Local Analyzer 的 Bangumi token 与 AI key。',
+  '只读快照：服务端仅开放只读接口，同步、修改收藏、治理写入、导入导出、备份与上传均返回只读拒绝，数据只在显式发布时重新提取。',
+  '公开口径投影：提取时按正式可见性与发布规则物理排除私密、主动隐藏与官方 NSFW 条目，并保护受限诊断与治理证据。',
+  '不持有 Local Analyzer 的 Bangumi token、AI key、本地配置或个人资产。',
   '不读取 Local Analyzer 的数据目录，也不连接 127.0.0.1:8787。',
   '与本地环境完全独立：公开展品不依赖任何人的机器。',
 ];
 
 export const demoAi = [
-  'AI 页面完整保留：界面与静态画像展示都在，用来体现 Analyzer 的产品形态。',
-  '当前不提供在线 AI 执行能力：公开展品只展示已有结果，不会替访客调用模型。',
+  'AI 与数据中枢完整展示：保留 v2.0.0 十模块静态 AI 画像，并通过公开隐私投影恢复数据中枢完整只读诊断展示（受保护原始证据与修复写入仍拒绝）。',
+  '静态结果绑定公开快照：当前画像与统计基于本次公开有效快照生成，历史报告保持只读可读，不会为缺口补造历史。',
+  '当前不提供在线 AI 执行能力：公开展品只展示已有结果，不会替访客调用模型或触发翻译任务。',
+];
+
+export const demoMilestones = [
+  [
+    '2026.11.18',
+    '升级至 Analyzer v2.0.0（Schema 15）',
+    '独立升级至 v2.0.0 预编译运行时与 Schema 15 公开只读快照，按正式可见性与治理规则重新投影并绑定静态 AI 画像；经提交 `93dd530` 接入正式隐私投影后，数据中枢恢复完整只读展示。',
+  ],
+  [
+    '2026.09.18',
+    '首次上线（Analyzer v1.5.0 快照）',
+    '产品的第一个公网入口在 Vercel Hobby 正式上线，确立只读快照、不持有本地凭据、不连 127.0.0.1:8787 与静态 AI 展示边界。',
+  ],
 ];
 
 /**
@@ -122,8 +139,11 @@ export const demoRootCause = {
 };
 
 export const demoCommits = [
-  '`25ab70e` —— Fastify 入口适配。',
-  '`6d997de` —— 启动诊断。',
-  '`ec93649` —— self-contained staging：把 Root Directory 外的运行时依赖实体化。',
-  '`d571a6d` —— `await app.listen(...)` 根因修复，Public Demo 最终上线。',
+  '`25ab70e`（2026.09.18）—— Fastify 入口适配。',
+  '`6d997de`（2026.09.18）—— 启动诊断。',
+  '`ec93649`（2026.09.18）—— self-contained staging：把 Root Directory 外的运行时依赖实体化。',
+  '`d571a6d`（2026.09.18）—— `await app.listen(...)` 根因修复，Public Demo 首次正式上线。',
+  '`d92b9c7`（2026.11.18）—— 升级至 Analyzer v2.0.0 预编译运行时与 Schema 15 公开只读快照。',
+  '`4d874b5`（2026.11.18）—— 按正式可见性与治理规则修正公开投影，保留合法系列与家族状态。',
+  '`93dd530`（2026.11.18）—— 为 Public Demo 数据中枢接入正式隐私投影，恢复完整只读诊断展示。',
 ];

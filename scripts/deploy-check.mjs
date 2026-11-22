@@ -126,7 +126,11 @@ try {
   const port = server.address().port;
 
   /* 3) 真实浏览器：主机名映射 + 逐条路由检查 */
-  const browser = await chromium.launch({ args: [`--host-resolver-rules=MAP ${HOST} 127.0.0.1`] });
+  const launchArgs = { args: [`--host-resolver-rules=MAP ${HOST} 127.0.0.1`] };
+  const browser = await chromium.launch(launchArgs).catch((error) => {
+    if (!/Executable doesn't exist/i.test(error?.message ?? '')) throw error;
+    return chromium.launch({ ...launchArgs, channel: 'msedge' });
+  });
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
 

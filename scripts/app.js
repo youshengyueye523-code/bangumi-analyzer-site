@@ -14,6 +14,7 @@ import {
   demoBoundary,
   demoCommits,
   demoEntities,
+  demoMilestones,
   demoPhases,
   demoRootCause,
   demoVersionNote,
@@ -174,7 +175,7 @@ function homeView() {
         </div>
         <a class="entry-card" href="#/archive/public-demo">
           <h3 class="card-title">Public Demo · 已上线</h3>
-          <p class="body-text">${formatDate(publicDemo.date)} 正式上线：基于 Analyzer v${escapeHtml(publicDemo.baseVersion)} 的独立只读展品，公网可访问。</p>
+          <p class="body-text">${formatDate(publicDemo.date)} 升级至 Analyzer v${escapeHtml(publicDemo.baseVersion)}（${formatDate(publicDemo.initialDate)} 首发）：独立只读展品，公网可访问。</p>
           <span class="arrow">查看里程碑 →</span>
         </a>
       </div>
@@ -611,14 +612,15 @@ function publicDemoSection() {
       ${sectionHead(
         '公开',
         'Public Demo 已正式上线',
-        '产品第一次有了可以对外分享的公网入口：一个只读的公开版本，不连接、也不依赖任何人的本地环境。',
+        '产品可以对外分享的公网只读入口：2026 年 9 月首次上线，2026 年 11 月升级至 v2.0.0，不连接、也不依赖任何人的本地环境。',
       )}
       <div class="grid-2">
         <div class="panel">
           <div class="meta-row">
-            <span class="meta-pill">${formatDate(publicDemo.date)}</span>
+            <span class="meta-pill">${formatDate(publicDemo.date)} 升级</span>
+            <span class="meta-pill">${formatDate(publicDemo.initialDate)} 首发</span>
             <span class="meta-pill">${escapeHtml(publicDemo.host)}</span>
-            <span class="latest-mark">已上线</span>
+            <span class="latest-mark">v${escapeHtml(publicDemo.baseVersion)} 已上线</span>
           </div>
           <h2 class="panel-title" style="margin: 12px 0 8px">${escapeHtml(publicDemo.status)}</h2>
           <p class="entry-body">${prettyText(publicDemo.summary)}</p>
@@ -652,9 +654,25 @@ function publicDemoSection() {
           ${list(demoBoundary)}
         </div>
         <div class="panel">
-          <h2 class="panel-title">AI 的现状</h2>
+          <h2 class="panel-title">AI 与数据中枢现状</h2>
           ${list(demoAi)}
         </div>
+      </div>
+
+      <div class="panel" style="margin-top: 16px">
+        <h2 class="panel-title">公开里程碑</h2>
+        ${demoMilestones
+          .map(
+            ([date, title, note]) => `
+        <div class="series-row wide">
+          <span class="series-name">${escapeHtml(date)}</span>
+          <div>
+            <span class="entry-title">${escapeHtml(title)}</span>
+            <p class="entry-body">${prettyText(note)}</p>
+          </div>
+        </div>`,
+          )
+          .join('')}
       </div>
     </section>
   `;
@@ -670,7 +688,7 @@ function demoRetroSection() {
       ${sectionHead(
         '',
         `部署复盘 · ${demoPhases.length} 个阶段`,
-        '从第一次部署到生产验收，中间是一段 Vercel 长征：500 地狱 → 200 世界。下面是真实过程，不是事后编的故事。',
+        '记录 2026 年 9 月 18 日首次上线时的 Vercel 排障过程（500 地狱 → 200 世界）；后续 v2.0.0 升级沿用了这套 Fastify zero-config 与 staging 机制。',
       )}
       <div class="timeline">
         ${demoPhases

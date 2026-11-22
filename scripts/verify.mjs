@@ -87,7 +87,10 @@ try {
   }
   check(!base.includes(':8787'), `官网使用独立端口（${base}）`);
 
-  const browser = await chromium.launch();
+  const browser = await chromium.launch().catch((error) => {
+    if (!/Executable doesn't exist/i.test(error?.message ?? '')) throw error;
+    return chromium.launch({ channel: 'msedge' });
+  });
 
   /* 2) 路由 + 控制台 + 资源 */
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
@@ -218,8 +221,12 @@ try {
   const archiveBody = await page.locator('#view').innerText();
   check(archiveBody.includes('Public Demo 已正式上线'), '档案页记录 Public Demo 里程碑');
   check(archiveBody.includes('https://bangumi-analyzer-demo.vercel.app'), '里程碑包含正式地址');
-  check(archiveBody.includes('Analyzer v1.5.0 快照'), '写清 Public Demo 对应上线时的 Analyzer v1.5.0 快照');
-  check(archiveBody.includes('公开展品不会随之更新'), '写明公开展品不随 Analyzer 更新');
+  check(archiveBody.includes('Analyzer v2.0.0 快照'), '写清 Public Demo 当前为 Analyzer v2.0.0 快照');
+  check(
+    archiveBody.includes('2026.09.18') && archiveBody.includes('v1.5.0') && archiveBody.includes('2026.11.18') && archiveBody.includes('93dd530'),
+    '保留 2026-09-18 首发 v1.5.0 历史并记录 2026-11-18 升级至 v2.0.0（93dd530）',
+  );
+  check(archiveBody.includes('公开展品不会随之更新'), '写明公开展品不随 Analyzer 自动更新');
   check(!archiveBody.includes('仍然是 v1.5.0'), '不再写「Analyzer 本体仍然是 v1.5.0」');
   const demoLink = page.getByRole('link', { name: /打开 Public Demo/ });
   check((await demoLink.getAttribute('href')) === 'https://bangumi-analyzer-demo.vercel.app' &&

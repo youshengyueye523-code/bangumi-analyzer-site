@@ -83,7 +83,10 @@ mkdirSync(OUT, { recursive: true });
 const errors = [];
 
 try {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch().catch((error) => {
+    if (!/Executable doesn't exist/i.test(error?.message ?? '')) throw error;
+    return chromium.launch({ channel: 'msedge' });
+  });
   for (const theme of ['dark', 'light']) {
     const context = await browser.newContext({ colorScheme: theme, viewport: { width: 1440, height: 900 } });
     await context.addInitScript((value) => localStorage.setItem('bangumi-site-theme', value), theme);

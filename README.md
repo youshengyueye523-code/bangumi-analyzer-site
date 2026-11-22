@@ -89,9 +89,9 @@ git -C $repo push
 本站与 Analyzer 是**两条独立的版本序列**：各自编号、各自维护，版本号不互相推导。
 
 ```
-Analyzer   v1.0.0 → … → v1.8.4 → v1.9.0 → v2.0.0   产品本体（私人 Local）
-Website    v1.0.0 → … → v1.0.9 → v1.1.0            本站：展示与项目档案
-Public Demo  Analyzer v1.5.0 快照                  独立只读公开展品
+Analyzer     v1.0.0 → … → v1.8.4 → v1.9.0 → v2.0.0         产品本体（私人 Local）
+Website      v1.0.0 → … → v1.0.9 → v1.1.0                  本站：展示与项目档案
+Public Demo  Analyzer v2.0.0 快照（2026-09-18 首发 v1.5.0） 独立只读公开展品
 ```
 
 | 规则 | 说明 |
