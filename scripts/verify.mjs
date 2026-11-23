@@ -319,13 +319,14 @@ try {
   await page.locator('[data-viewer]').getByRole('button', { name: '浅色', exact: true }).click();
   await page.waitForTimeout(200);
   const shotSource = await page.locator('[data-shot-stage] img').getAttribute('src');
-  check(shotSource?.includes('-light.webp'), `截图可切换主题（当前 ${shotSource}）`);
+  check(shotSource?.includes('dashboard-v2-light.webp'), `截图默认展示 v2.0.0 且可切换主题（当前 ${shotSource}）`);
 
-  /* 6b) 16 张真实截图都必须来自高分辨率源图（取景框最宽 ~1114px，高分屏需要 ~2200px 以上） */
+  /* 6b) 18 张真实截图都必须来自高分辨率源图（取景框最宽 ~1114px，高分屏需要 ~2200px 以上） */
   const shotSizes = [];
   for (const theme of ['深色', '浅色']) {
     await page.locator('[data-viewer]').getByRole('button', { name: theme, exact: true }).click();
     for (const id of [
+      'dashboard-v2',
       'dashboard',
       'library',
       'series',

@@ -67,7 +67,7 @@ const device = (media, extraClass = '') => `
       <span class="device-dots" aria-hidden="true"><span></span><span></span><span></span></span>
       <span class="device-url">${escapeHtml(media.barLabel ?? '127.0.0.1:8787')}</span>
     </div>
-    <img src="${escapeHtml(media.src)}" alt="${escapeHtml(media.alt ?? '')}" loading="lazy" />
+    <img src="${escapeHtml(media.src)}" alt="${escapeHtml(media.alt ?? '')}" loading="${media.eager ? 'eager' : 'lazy'}" />
   </figure>
 `;
 
@@ -113,7 +113,7 @@ function homeView() {
         </div>
       </div>
       <div class="hero-stage enter delay-1">
-        ${device({ src: 'assets/shots/dashboard-v2-dark.webp', alt: 'Bangumi Analyzer v2.0.0 (r3) 仪表盘（公开示例数据 · 深色主题）' })}
+        ${device({ src: 'assets/shots/dashboard-v2-dark.webp', alt: 'Bangumi Analyzer v2.0.0 (r3) 仪表盘（公开示例数据 · 深色主题）', eager: true })}
         <figcaption class="device-caption">
           <span>Analyzer v2.0.0 (r3) 实机画面（示例数据）· 深色主题</span>
           <span>蓝色氛围背景 · 所有分析都读取本地数据库</span>
@@ -498,26 +498,27 @@ function demoSection() {
 }
 
 const shots = [
-  { id: 'dashboard', title: '仪表盘', note: '12 个关键指标 + 状态 / 评分 / 放送形态分布' },
-  { id: 'library', title: '收藏库', note: '卡片与列表双视图，服务端分页与组合筛选' },
-  { id: 'series', title: '系列 / IP', note: '实体、成员与域内搜索；按样本门槛排序（覆盖 / 完成 / 我的评分）' },
+  { id: 'dashboard-v2', title: '仪表盘 · v2.0.0', note: 'v2.0.0 (r3) 示例 · 蓝色氛围背景、完整统计与左下角用户卡片' },
+  { id: 'analysis', title: '统计分析 · v2.0.0', note: 'v2.0.0 示例 · 年度趋势：统一精读范围、摘要和归集数量' },
+  {
+    id: 'diagnostics',
+    title: '数据中枢 · v2.0.0',
+    note: 'v2.0.0 示例 · 数据中枢：一次本地观察的范围、状态和模块结果',
+  },
+  { id: 'dashboard', title: '仪表盘 · 历史 v1.8.2', note: '历史档案（v1.8.2）：12 个关键指标 + 状态 / 评分 / 放送形态分布' },
+  { id: 'library', title: '收藏库 · 历史', note: '历史档案：卡片与列表双视图，服务端分页与组合筛选' },
+  { id: 'series', title: '系列 / IP · 历史', note: '历史档案：实体、成员与域内搜索；按样本门槛排序（覆盖 / 完成 / 我的评分）' },
   {
     id: 'series-detail',
-    title: '系列详情 · 实体分析',
-    note: '覆盖 / 完成 / 状态 / 评分 / 放送时间 / 消费证据，成员逐条可追溯',
+    title: '系列详情 · 历史',
+    note: '历史档案：覆盖 / 完成 / 状态 / 评分 / 放送时间 / 消费证据，成员逐条可追溯',
   },
   {
     id: 'franchise-detail',
-    title: '家族详情 · 跨系列分析',
-    note: '成员是系列：跨 Series 聚合的覆盖、评分与消费证据',
+    title: '家族详情 · 历史',
+    note: '历史档案：成员是系列，跨 Series 聚合的覆盖、评分与消费证据',
   },
-  { id: 'analysis', title: '统计分析', note: 'v2.0.0 示例 · 年度趋势：统一精读范围、摘要和归集数量' },
-  {
-    id: 'diagnostics',
-    title: '数据中枢',
-    note: 'v2.0.0 示例 · 数据中枢：一次本地观察的范围、状态和模块结果',
-  },
-  { id: 'settings', title: '设置 · 外观', note: '主题、背景板与界面材质' },
+  { id: 'settings', title: '设置 · 历史', note: '历史档案：主题、背景板与界面材质' },
 ];
 
 function shotsView() {
@@ -526,7 +527,7 @@ function shotsView() {
       <span class="kicker">界面</span>
       <h1 class="hero-title" style="font-size: clamp(28px, 3.4vw, 40px)">真实界面，不是设计稿</h1>
       <p class="lede">
-        统计分析、数据中枢是 v2.0.0 用示例数据实际运行的画面；其余保留历史实机截图。所有画面均可切换深色 / 浅色。
+        优先展示 Analyzer v2.0.0 (r3) 示例数据实机画面（仪表盘、统计分析、数据中枢），并清晰标注保留的历史档案截图（v1.8.2）。所有画面均可切换深色 / 浅色。
       </p>
     </div>
 

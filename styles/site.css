@@ -457,7 +457,7 @@ h3.card-title {
   width: 100%;
   height: auto;
   aspect-ratio: 16 / 10;
-  object-fit: cover;
+  object-fit: contain;
   object-position: top center;
 }
 
