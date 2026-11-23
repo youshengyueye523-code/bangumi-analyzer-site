@@ -70,6 +70,7 @@ export const websiteVersions = [
       {
         title: '改进与边界',
         items: [
+          '首页主视觉同步更新为 Analyzer v2.0.0 (r3) 隔离合成示例数据的真实深色仪表盘截图（含蓝色氛围背景与完整左下角用户卡片），同时保留「界面」页中的历史 v1.8.2 截图作为档案证据。',
           '首页主按钮升级为「下载 Windows 版」，并列提供「在线体验」、「GitHub 开源」、「浏览版本档案」与「安装说明」入口。',
           '档案页版本关系表更新为四条独立事实（Analyzer v2.0.0 r3 / Companion v2.0.0-rc4 / Website v1.2.0 / Public Demo v2.0.0 快照）；本站继续由独立 GitHub Pages 静态发布，与 Vercel 上的 Public Demo 严格分离。',
         ],

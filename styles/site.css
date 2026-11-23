@@ -198,7 +198,7 @@ h3.card-title {
   gap: 12px;
   height: 52px;
   padding: 0 12px 0 14px;
-  border-radius: var(--radius-panel);
+  border-radius: 10px;
   border: 1px solid var(--border);
   background-color: color-mix(in oklab, var(--bg-elevated) calc(var(--mat-alpha-float) * 100%), transparent);
   backdrop-filter: blur(var(--mat-blur-float)) saturate(var(--mat-saturate));
@@ -453,6 +453,7 @@ h3.card-title {
 }
 
 .device img {
+  display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 16 / 10;

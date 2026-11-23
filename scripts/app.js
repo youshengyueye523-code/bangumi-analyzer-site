@@ -113,10 +113,10 @@ function homeView() {
         </div>
       </div>
       <div class="hero-stage enter delay-1">
-        ${device({ src: 'assets/shots/dashboard-dark.webp', alt: 'Bangumi Analyzer 仪表盘（深色）' })}
+        ${device({ src: 'assets/shots/dashboard-v2-dark.webp', alt: 'Bangumi Analyzer v2.0.0 (r3) 仪表盘（公开示例数据 · 深色主题）' })}
         <figcaption class="device-caption">
-          <span>历史界面截图 · 深色主题</span>
-          <span>所有分析都读取本地数据库</span>
+          <span>Analyzer v2.0.0 (r3) 实机画面（示例数据）· 深色主题</span>
+          <span>蓝色氛围背景 · 所有分析都读取本地数据库</span>
         </figcaption>
       </div>
     </section>
