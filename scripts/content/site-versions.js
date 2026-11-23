@@ -12,34 +12,70 @@
 
 export const website = {
   name: 'Bangumi Analyzer 产品展示与项目档案网站',
-  version: '1.1.0',
-  date: '2026-11-18',
+  version: '1.2.0',
+  date: '2026-11-23',
   /** 本站当前记录到的 Analyzer 版本 */
   analyzer: '2.0.0',
+  /** 本站当前记录到的 Companion 公开预发行版本 */
+  companion: '2.0.0-rc4',
 };
 
-/** 两条版本序列的现状（档案页用来说明关系） */
+/** 四条独立版本事实（档案页用来说明关系，彼此独立演进） */
 export const versionSeries = [
   [
     'Analyzer',
-    `v1.0.0 → … → v1.8.4 → v1.9.0 → v${website.analyzer}`,
-    '产品本体：功能、数据与界面。版本历史在时间线与版本页。',
+    `v1.0.0 → … → v1.9.0 → v${website.analyzer} (r3)`,
+    '产品本体：功能、数据契约与界面。v2.0.0 (r3) 已恢复系列自动标题判定契约，随 Companion 发行包交付；版本历史在时间线与版本页。',
+  ],
+  [
+    'Companion',
+    `v${website.companion}（Pre-release）`,
+    'Windows 桌面伴侣与图形安装器：内置 Analyzer v2.0.0 (r3) 独立运行时、首次向导失败恢复、小番 Live2D 随机互动与备份卸载管理。',
   ],
   [
     'Website',
-    `v1.0.0 → v1.0.1 → v1.0.2 → v1.0.3 → v1.0.4 → v1.0.5 → v1.0.6 → v1.0.7 → v1.0.8 → v1.0.9 → v${website.version}`,
-    `本站：展示与项目档案。版本历史在本节，当前为 v${website.version}。`,
+    `v1.0.0 → … → v1.1.0 → v${website.version}`,
+    `本站：产品展示、Windows 下载入口与项目档案（独立 GitHub Pages 静态站），当前为 v${website.version}。`,
+  ],
+  [
+    'Public Demo',
+    'Analyzer v2.0.0 快照（Vercel 只读）',
+    '独立只读公开展品：2026.09.18 首发于 v1.5.0，2026.11.18 独立升级至 v2.0.0 快照；不随本地或 Companion 自动更新。',
   ],
 ];
 
 export const versionPolicy = [
-  'Analyzer 出新版本时，本站先判断「哪些内容受影响」：版本记录、截图、功能说明、版本故事 —— 而不是先决定本站要不要升版本。',
+  'Analyzer、Companion、Website 与 Public Demo 快照保持四条独立版本事实：各自编号、各自发布，不互相混淆或推导。',
   '信息同步不构成升级理由：只补一条版本记录或一张截图，不必产生新的 Website 版本号。',
-  '本站自己的改动（移动端布局、文案、展示方式）只记录在本站版本历史里，不反向要求 Analyzer 改版本。',
-  '只有本站自身发生了可描述的变更，才产生新的 Website 版本；版本号只描述本站，不描述 Analyzer。',
+  '本站自己的改动（导航、下载页、布局与展示能力）只记录在本站版本历史里，不反向要求 Analyzer 或 Public Demo 改版本。',
+  '只有本站自身发生了可描述的功能或结构变更，才产生新的 Website 版本；版本号只描述本站。',
 ];
 
 export const websiteVersions = [
+  {
+    version: '1.2.0',
+    date: '2026-11-23',
+    title: 'Windows 一键下载页、Companion 展示与四轨版本体系',
+    summary:
+      '面向普通 Windows 用户新增独立下载与安装指南页（#/download），在首页补充「下载 Windows 版」主入口、在线体验与 GitHub 开源入口，展示 Companion 与小番真实运行画面，并将档案页版本关系扩展为 Analyzer / Companion / Website / Public Demo 四条独立事实。不重复录入 Analyzer v1.9.0 / v2.0.0 历史，不改动 Public Demo。',
+    sections: [
+      {
+        title: '新增',
+        items: [
+          '新增 `#/download` 下载与 Companion 专页：明确区分图形安装版（推荐，.exe）与绿色便携版（.zip），列出 v2.0.0-rc4 真实文件大小、GitHub Releases 直接下载链接与 SHA-256 校验方法。',
+          '补充面向普通用户的三步安装与首次配置指南、常见目录占用/会话锁恢复说明、默认保留 data/ 的备份卸载机制，以及未签名安装器 SmartScreen 与更新机制的如实说明。',
+          '新增 Companion 桌面伴侣与小番（Xiaofan）Live2D 真实画面展示（基于公开安全示例数据），介绍无边框全屏、高刷帧率策略与随机互动，同时保留 Analyzer 的主要产品展示地位。',
+        ],
+      },
+      {
+        title: '改进与边界',
+        items: [
+          '首页主按钮升级为「下载 Windows 版」，并列提供「在线体验」、「GitHub 开源」、「浏览版本档案」与「安装说明」入口。',
+          '档案页版本关系表更新为四条独立事实（Analyzer v2.0.0 r3 / Companion v2.0.0-rc4 / Website v1.2.0 / Public Demo v2.0.0 快照）；本站继续由独立 GitHub Pages 静态发布，与 Vercel 上的 Public Demo 严格分离。',
+        ],
+      },
+    ],
+  },
   {
     version: '1.1.0',
     date: '2026-11-18',

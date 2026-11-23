@@ -26,6 +26,7 @@ const OUT = process.env.SITE_SHOTS_DIR ?? fileURLToPath(new URL('../../test-resu
 
 const PAGES = [
   ['home', '/', true],
+  ['download', '/download', true],
   ['features', '/features', true],
   ['shots', '/shots', false],
   ['versions', '/versions', false],
@@ -37,6 +38,7 @@ const PAGES = [
 ];
 const NARROW = [
   ['home-375', '/'],
+  ['download-375', '/download'],
   ['features-375', '/features'],
   ['versions-375', '/versions'],
   ['version-200-375', '/versions/2.0.0'],

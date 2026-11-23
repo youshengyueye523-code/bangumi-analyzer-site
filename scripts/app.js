@@ -20,6 +20,13 @@ import {
   demoVersionNote,
   publicDemo,
 } from './content/public-demo.js';
+import {
+  companionHighlights,
+  packages,
+  release,
+  setupSteps,
+  troubleshootingAndSafety,
+} from './content/download.js';
 
 const defaultTitle = document.title;
 const view = document.getElementById('view');
@@ -58,7 +65,7 @@ const device = (media, extraClass = '') => `
   <figure class="device ${extraClass}">
     <div class="device-bar">
       <span class="device-dots" aria-hidden="true"><span></span><span></span><span></span></span>
-      <span class="device-url">127.0.0.1:8787</span>
+      <span class="device-url">${escapeHtml(media.barLabel ?? '127.0.0.1:8787')}</span>
     </div>
     <img src="${escapeHtml(media.src)}" alt="${escapeHtml(media.alt ?? '')}" loading="lazy" />
   </figure>
@@ -98,9 +105,11 @@ function homeView() {
           ${escapeHtml(site.homeLead)}
         </p>
         <div class="hero-actions enter delay-2">
-          <a class="button primary" href="#/features">看看能做什么</a>
-          <a class="button" href="#/versions">浏览版本档案</a>
-          <a class="button ghost" href="#/shots">真实界面截图</a>
+          <a class="button primary" href="#/download">下载 Windows 版</a>
+          <a class="button" href="${escapeHtml(publicDemo.url)}" target="_blank" rel="noopener noreferrer">在线体验 ↗</a>
+          <a class="button" href="${escapeHtml(release.repoUrl)}" target="_blank" rel="noopener noreferrer">GitHub 开源 ↗</a>
+          <a class="button ghost" href="#/versions">版本记录</a>
+          <a class="button ghost" href="#/download/guide">安装说明</a>
         </div>
       </div>
       <div class="hero-stage enter delay-1">
@@ -139,6 +148,46 @@ function homeView() {
           </a>`,
           )
           .join('')}
+      </div>
+    </section>
+
+    <section class="section reveal">
+      ${sectionHead(
+        'Windows 桌面伴侣',
+        '用 Companion 与「小番」，把本地安装和日常维护变简单',
+        `无需安装 Node.js 或敲命令。${release.companionVersion}（${release.channel}）内置 ${release.analyzerCore} 独立运行时，提供图形安装向导、一键备份与小番 Live2D 陪伴舞台。`,
+      )}
+      <div class="story">
+        <div class="story-copy">
+          <div class="meta-row" style="margin-bottom: 12px">
+            <span class="meta-pill">Companion v${escapeHtml(release.companionVersion)}</span>
+            <span class="meta-pill">内置 ${escapeHtml(release.analyzerCore)}</span>
+            <span class="meta-pill">Windows x64 · 免装 Node</span>
+          </div>
+          <ol class="story-steps">
+            ${companionHighlights
+              .map(
+                ([title, body]) =>
+                  `<li><span class="step-arrow" aria-hidden="true">→</span><span><strong>${escapeHtml(title)}</strong>：${escapeHtml(body)}</span></li>`,
+              )
+              .join('')}
+          </ol>
+          <div class="hero-actions" style="margin-top: 18px">
+            <a class="button primary" href="#/download">下载 Windows 版</a>
+            <a class="button" href="${escapeHtml(release.releaseUrl)}" target="_blank" rel="noopener noreferrer">前往 GitHub Releases ↗</a>
+          </div>
+        </div>
+        <div class="story-media">
+          ${device({
+            src: 'assets/shots/companion-home-dark.png',
+            alt: 'Bangumi Analyzer Companion 主界面与小番 Live2D（公开安全示例数据）',
+            barLabel: 'Bangumi Analyzer Companion',
+          })}
+          <figcaption class="device-caption">
+            <span>Companion v${escapeHtml(release.companionVersion)} 真实运行画面（示例数据）</span>
+            <span>小番 Live2D · 本地服务托管</span>
+          </figcaption>
+        </div>
       </div>
     </section>
 
@@ -208,6 +257,155 @@ function timeline(entries) {
         )
         .join('')}
     </div>
+  `;
+}
+
+function downloadView() {
+  return `
+    <div class="page-head">
+      <span class="kicker">下载 · WINDOWS X64</span>
+      <h1 class="hero-title" style="font-size: clamp(28px, 3.4vw, 40px)">下载 Bangumi Analyzer Windows 版</h1>
+      <p class="lede">
+        普通用户无需配置开发环境或自行编译源码。下载下方预编译安装版或便携版，即可在本地启动完整
+        ${escapeHtml(release.analyzerCore)} 与桌面伴侣 Companion。
+      </p>
+      <div class="meta-row">
+        <span class="meta-pill">Companion v${escapeHtml(release.companionVersion)}</span>
+        <span class="meta-pill">${escapeHtml(release.channel)}</span>
+        <span class="meta-pill">内置 ${escapeHtml(release.analyzerCore)}</span>
+        <span class="meta-pill">构建 ${escapeHtml(release.buildId)}</span>
+        <span class="meta-pill">${formatDate(release.date)}</span>
+      </div>
+    </div>
+
+    <section class="section quiet" id="packages">
+      <div class="grid-2">
+        ${packages
+          .map(
+            (pkg) => `
+          <article class="panel" style="display: flex; flex-direction: column; gap: 12px">
+            <div class="meta-row">
+              <span class="${pkg.primary ? 'latest-mark' : 'meta-pill'}">${escapeHtml(pkg.badge)}</span>
+              <span class="meta-pill">${escapeHtml(pkg.size)}</span>
+            </div>
+            <h2 class="panel-title" style="margin: 0">${escapeHtml(pkg.title)}</h2>
+            <p class="entry-body">${escapeHtml(pkg.summary)}</p>
+            ${list(pkg.points)}
+            <div style="margin-top: auto; padding-top: 8px; display: flex; flex-direction: column; gap: 8px">
+              <div class="hero-actions" style="margin-top: 0">
+                <a class="button ${pkg.primary ? 'primary' : ''}" href="${escapeHtml(pkg.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(pkg.cta)} ↗</a>
+              </div>
+              <p class="entry-meta" style="overflow-wrap: anywhere">
+                文件名：<code>${escapeHtml(pkg.fileName)}</code>
+              </p>
+              <p class="entry-meta" style="overflow-wrap: anywhere">
+                SHA-256：<code>${escapeHtml(pkg.sha256)}</code>
+              </p>
+            </div>
+          </article>`,
+          )
+          .join('')}
+      </div>
+
+      <div class="panel" style="margin-top: 16px">
+        <h2 class="panel-title">完整性校验与官方发布页</h2>
+        <p class="entry-body">${escapeHtml(release.requirements)}</p>
+        <p class="entry-body" style="margin-top: 8px">
+          请在下载后核对 <code>SHA256SUMS.txt</code>（PowerShell 运行 <code>Get-FileHash &lt;文件名&gt; -Algorithm SHA256</code>）。
+          <strong>请勿将 GitHub 自动生成的 <code>Source code (zip)</code> 当作可运行安装包。</strong>
+        </p>
+        <div class="hero-actions" style="margin-top: 14px">
+          <a class="button" href="${escapeHtml(release.releaseUrl)}" target="_blank" rel="noopener noreferrer">GitHub Release ${escapeHtml(release.releaseTag)} ↗</a>
+          <a class="button" href="${escapeHtml(release.checksumsUrl)}" target="_blank" rel="noopener noreferrer">查看 SHA256SUMS.txt ↗</a>
+          <a class="button ghost" href="${escapeHtml(release.repoUrl)}" target="_blank" rel="noopener noreferrer">GitHub 源码仓库 ↗</a>
+          <a class="button ghost" href="${escapeHtml(publicDemo.url)}" target="_blank" rel="noopener noreferrer">先体验在线只读 Demo ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section quiet" id="guide">
+      ${sectionHead(
+        '首次使用',
+        '三步完成安装、配置与同步',
+        '从下载到打开本地分析界面，全程在图形界面里完成；如暂不绑定 Bangumi 账号也可以先跳过。',
+      )}
+      <div class="timeline">
+        ${setupSteps
+          .map(
+            (step) => `
+          <div class="timeline-item static">
+            <div>
+              <div class="timeline-version">步骤 ${escapeHtml(step.index)}</div>
+            </div>
+            <div class="timeline-body">
+              <span class="timeline-title">${escapeHtml(step.title)}</span>
+              <span class="timeline-summary">${prettyText(step.body)}</span>
+            </div>
+          </div>`,
+          )
+          .join('')}
+      </div>
+    </section>
+
+    <section class="section quiet" id="companion">
+      ${sectionHead(
+        'Companion 与小番',
+        '日常桌面伴侣与实机画面',
+        '所有画面均来自 Companion v2.0.0-rc4 真实打包程序与公开安全示例数据。',
+      )}
+      <div class="grid-2">
+        <div>
+          ${device({
+            src: 'assets/shots/companion-home-dark.png',
+            alt: 'Companion 主面板与小番 Live2D 半身陪伴舞台',
+            barLabel: 'Companion 主面板 · 本地服务运行中',
+          })}
+          <figcaption class="device-caption">
+            <span>主面板 · r3 校验运行中 + 小番互动</span>
+            <span>仅本机回环监听</span>
+          </figcaption>
+        </div>
+        <div>
+          ${device({
+            src: 'assets/shots/companion-intro-dark.png',
+            alt: 'Companion 首次启动欢迎界面与小番全身 Live2D',
+            barLabel: 'Companion 首次引导入口',
+          })}
+          <figcaption class="device-caption">
+            <span>首次欢迎页 · 全身小番 Live2D</span>
+            <span>约 3 分钟完成本地初始化</span>
+          </figcaption>
+        </div>
+      </div>
+    </section>
+
+    <section class="section quiet" id="safety">
+      ${sectionHead(
+        '安全与维护',
+        '失败恢复、数据安全与未签名说明',
+        '透明说明常见异常的处理方式、数据存放边界、未签名提示与第三方许可。',
+      )}
+      <div class="grid-2">
+        ${troubleshootingAndSafety
+          .slice(0, 2)
+          .map(
+            (group) => `
+          <div class="panel">
+            <h2 class="panel-title">${escapeHtml(group.title)}</h2>
+            ${list(group.items)}
+          </div>`,
+          )
+          .join('')}
+      </div>
+      ${
+        troubleshootingAndSafety[2]
+          ? `<div class="panel" style="margin-top: 16px">
+              <h2 class="panel-title">${escapeHtml(troubleshootingAndSafety[2].title)}</h2>
+              ${list(troubleshootingAndSafety[2].items)}
+            </div>`
+          : ''
+      }
+    </section>
   `;
 }
 
@@ -631,7 +829,7 @@ function publicDemoSection() {
         </div>
 
         <div class="panel">
-          <h2 class="panel-title">三个实体，三条边界</h2>
+          <h2 class="panel-title">四个实体，四条边界</h2>
           ${demoEntities
             .map(
               ([name, version, note]) => `
@@ -766,7 +964,7 @@ function websiteSection() {
         '本站与 Analyzer 是两条独立的版本序列：Analyzer 的版本历史在上面的时间线与档案里，本节只记录本站自己。',
       )}
       <div class="panel">
-        <h2 class="panel-title">两条版本序列</h2>
+        <h2 class="panel-title">四条独立版本事实</h2>
         ${versionSeries
           .map(
             ([name, series, note]) => `
@@ -802,6 +1000,8 @@ function currentRoute() {
 
 const ROUTES = [
   { pattern: /^\/$/, render: () => homeView(), motion: true },
+  { pattern: /^\/download$/, render: () => downloadView(), motion: false },
+  { pattern: /^\/download\/(.+)$/, render: () => downloadView(), motion: false },
   { pattern: /^\/features$/, render: () => featuresView(), motion: true },
   { pattern: /^\/features\/(.+)$/, render: () => featuresView(), motion: false },
   { pattern: /^\/shots$/, render: () => shotsView(), motion: false },
@@ -836,8 +1036,8 @@ function render() {
   setupViewInteractions(matched?.motion ?? false);
   window.scrollTo({ top: 0, behavior: 'auto' });
 
-  /* 深链接（#/features/search、#/archive/public-demo 这类）：渲染完再滚到对应区块 */
-  const focus = route.match(/^\/(?:features|archive)\/(.+)$/);
+  /* 深链接（#/features/search、#/archive/public-demo、#/download/guide 这类）：渲染完再滚到对应区块 */
+  const focus = route.match(/^\/(?:features|archive|download)\/(.+)$/);
   if (focus) scrollToAnchor(decodeURIComponent(focus[1]));
 }
 
@@ -1014,10 +1214,12 @@ document.getElementById('footer-note').textContent = `${site.name} · ${site.tag
 document.getElementById('footer-version').textContent =
   `Website v${website.version}（${formatDate(website.date)}）· 本站记录的 Analyzer 版本：v${website.analyzer}`;
 document.getElementById('footer-links').innerHTML = `
+  <a class="nav-link" href="#/download">下载</a>
   <a class="nav-link" href="#/features">功能</a>
   <a class="nav-link" href="#/shots">界面</a>
   <a class="nav-link" href="#/versions">版本</a>
   <a class="nav-link" href="#/archive">档案</a>
+  <a class="nav-link" href="${escapeHtml(release.repoUrl)}" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
 `;
 
 window.addEventListener('hashchange', render);

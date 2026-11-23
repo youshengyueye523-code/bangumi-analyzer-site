@@ -36,7 +36,7 @@ import { chromium } from '@playwright/test';
 const SITE = fileURLToPath(new URL('../', import.meta.url));
 const HOST = process.env.DEPLOY_CHECK_HOST ?? 'site.example.test';
 const PREFIX = '/product/';
-const ROUTES = ['/', '/features', '/shots', '/versions', '/versions/2.0.0', '/versions/1.9.0', '/versions/1.8.4', '/archive', '/archive/public-demo'];
+const ROUTES = ['/', '/download', '/features', '/shots', '/versions', '/versions/2.0.0', '/versions/1.9.0', '/versions/1.8.4', '/archive', '/archive/public-demo'];
 const PRODUCTION = [
   ['index.html', 'file'],
   ['styles', 'dir'],

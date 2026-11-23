@@ -28,15 +28,20 @@ export const publicDemo = {
 export const demoEntities = [
   [
     'Local Analyzer',
-    `v${website.analyzer}`,
-    '产品本体：私人本地工作环境，已完成 v2.0.0 正式迁移与最终验收，独立演进。',
+    `v${website.analyzer} (r3)`,
+    '产品本体：本地工作环境与 Windows 便携核心（r3 已恢复系列自动标题判定契约），独立演进。',
+  ],
+  [
+    'Companion',
+    `v${website.companion}`,
+    'Windows 桌面伴侣与图形安装器（Pre-release）：面向普通用户打包交付 Analyzer 核心、小番 Live2D 与维护管理。',
   ],
   [
     'Public Demo',
     `Analyzer v${publicDemo.baseVersion} 快照`,
-    `独立只读展品：${publicDemo.initialDate} 首发于 v${publicDemo.initialVersion}，${publicDemo.date} 独立升级至 v${publicDemo.baseVersion} 快照；不单独编号，也不会随 Local 自动更新。`,
+    `独立只读展品：${publicDemo.initialDate} 首发于 v${publicDemo.initialVersion}，${publicDemo.date} 独立升级至 v${publicDemo.baseVersion} 快照；不单独编号，也不会随 Local 或 Companion 自动更新。`,
   ],
-  ['Website', `v${website.version}`, '本站：产品展示与项目档案，使用自己的版本序列。'],
+  ['Website', `v${website.version}`, '本站：产品展示、Windows 下载入口与项目档案，使用自己的版本序列。'],
 ];
 
 /** 最容易混淆的一句，单独写清楚 */

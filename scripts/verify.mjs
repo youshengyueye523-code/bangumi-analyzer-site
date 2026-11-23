@@ -18,6 +18,7 @@ const SERVER = fileURLToPath(new URL('../serve.mjs', import.meta.url));
 const ANALYZER = process.env.ANALYZER_URL ?? 'http://127.0.0.1:8787';
 const ROUTES = [
   ['首页', '/'],
+  ['下载', '/download'],
   ['功能', '/features'],
   ['界面', '/shots'],
   ['版本', '/versions'],
@@ -238,6 +239,24 @@ try {
   check(
     archiveBody.includes('node serve.mjs') && archiveBody.includes('127.0.0.1:8789'),
     '本地运行说明与 serve.mjs 行为一致（node serve.mjs / 127.0.0.1:8789）',
+  );
+
+  /* 2f) Windows 下载页、直链与 Companion 展示检查 */
+  await page.goto(`${base}#/download`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(300);
+  const downloadText = await page.locator('#view').innerText();
+  check(
+    downloadText.includes('Bangumi-Analyzer-Companion-Setup-2.0.0-rc4-win-x64.exe') &&
+      downloadText.includes('Bangumi-Analyzer-Companion-Portable-2.0.0-rc4-win-x64.zip') &&
+      downloadText.includes('d4115df331ff2c7e4bc8817604fdca9d4a153a6bcac01927bb3b46da80181047'),
+    '下载页列出安装版、便携版与真实 SHA-256 摘要',
+  );
+  const exeHref = await page.getByRole('link', { name: /下载安装版/ }).getAttribute('href');
+  const zipHref = await page.getByRole('link', { name: /下载便携版/ }).getAttribute('href');
+  check(
+    Boolean(exeHref?.includes('/releases/download/v2.0.0-rc4/Bangumi-Analyzer-Companion-Setup-2.0.0-rc4-win-x64.exe')) &&
+      Boolean(zipHref?.includes('/releases/download/v2.0.0-rc4/Bangumi-Analyzer-Companion-Portable-2.0.0-rc4-win-x64.zip')),
+    '下载按钮指向明确的 v2.0.0-rc4 Release 附件直链（不依赖 releases/latest）',
   );
 
   /* 3) 动效预算：进入首页 1.6s 后不应存在持续运行的动画 */

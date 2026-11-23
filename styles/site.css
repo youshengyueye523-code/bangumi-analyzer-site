@@ -938,6 +938,10 @@ h3.card-title {
   gap: 16px;
 }
 
+.grid-2 > * {
+  min-width: 0;
+}
+
 /* 栅格里的面板由 gap 控制间距，不再吃「相邻面板」的 16px 上边距（否则两列不齐） */
 .grid-2 > .panel + .panel {
   margin-top: 0;
@@ -1101,7 +1105,8 @@ h3.card-title {
  * break-word 只在「整行都放不下」时才允许断开（例如很长的 URL）。
  */
 code {
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 @media (max-width: 719px) {
