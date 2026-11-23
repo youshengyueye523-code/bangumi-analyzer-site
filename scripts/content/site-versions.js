@@ -17,20 +17,20 @@ export const website = {
   /** 本站当前记录到的 Analyzer 版本 */
   analyzer: '2.0.0',
   /** 本站当前记录到的 Companion 公开预发行版本 */
-  companion: '2.0.0-rc4',
+  companion: '2.0.0-rc5',
 };
 
 /** 四条独立版本事实（档案页用来说明关系，彼此独立演进） */
 export const versionSeries = [
   [
     'Analyzer',
-    `v1.0.0 → … → v1.9.0 → v${website.analyzer} (r3)`,
-    '产品本体：功能、数据契约与界面。v2.0.0 (r3) 已恢复系列自动标题判定契约，随 Companion 发行包交付；版本历史在时间线与版本页。',
+    `v1.0.0 → … → v1.9.0 → v${website.analyzer} (r4)`,
+    '产品本体：功能、数据契约与界面。v2.0.0 (r4) 包含 r3 系列自动标题判定契约与 Series Engine v3 一次性升级兜底，随 Companion 发行包交付；版本历史在时间线与版本页。',
   ],
   [
     'Companion',
     `v${website.companion}（Pre-release）`,
-    'Windows 桌面伴侣与图形安装器：内置 Analyzer v2.0.0 (r3) 独立运行时、首次向导失败恢复、小番 Live2D 随机互动与备份卸载管理。',
+    'Windows 桌面伴侣与图形安装器：内置 Analyzer v2.0.0 (r4) 独立运行时、老安装重连、7 类网络诊断、首次向导失败恢复、小番 Live2D 随机互动与备份卸载管理（历史版本 v2.0.0-rc4 保留归档）。',
   ],
   [
     'Website',

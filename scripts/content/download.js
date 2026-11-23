@@ -2,23 +2,25 @@
  * Windows 发行下载与 Companion 桌面伴侣资料（对应真实 GitHub Releases 产物）。
  *
  * 边界：
- * - 所有版本号、构建标识、文件大小与 SHA-256 均来自真实 RC4 构建清单；
+ * - 所有版本号、构建标识、文件大小与 SHA-256 均来自真实 RC5 构建清单；
  * - 明确区分 Pre-release 与正式签名版，不虚构自动更新或商业代码签名；
  * - 不写本机绝对路径，保持独立静态部署可迁移。
  */
 
 export const release = {
   repoUrl: 'https://github.com/youshengyueye523-code/bangumi-analyzer-app',
-  releaseTag: 'v2.0.0-rc4',
-  releaseUrl: 'https://github.com/youshengyueye523-code/bangumi-analyzer-app/releases/tag/v2.0.0-rc4',
+  releaseTag: 'v2.0.0-rc5',
+  releaseUrl: 'https://github.com/youshengyueye523-code/bangumi-analyzer-app/releases/tag/v2.0.0-rc5',
+  previousReleaseTag: 'v2.0.0-rc4',
+  previousReleaseUrl: 'https://github.com/youshengyueye523-code/bangumi-analyzer-app/releases/tag/v2.0.0-rc4',
   checksumsUrl:
-    'https://github.com/youshengyueye523-code/bangumi-analyzer-app/releases/download/v2.0.0-rc4/SHA256SUMS.txt',
-  companionVersion: '2.0.0-rc4',
+    'https://github.com/youshengyueye523-code/bangumi-analyzer-app/releases/download/v2.0.0-rc5/SHA256SUMS.txt',
+  companionVersion: '2.0.0-rc5',
   channel: 'Pre-release',
-  buildId: 'rc4-202611230557',
+  buildId: 'rc5-202611230852',
   date: '2026-11-23',
-  analyzerCore: 'Analyzer v2.0.0 (r3)',
-  analyzerSha256: 'adfeb5d29e59823c9d91def92eda18851a8b9991723435798842410ccf5f5ae6',
+  analyzerCore: 'Analyzer v2.0.0 (r4)',
+  analyzerSha256: 'a773d96356cd659ad845926c1f3d695092e09b659d9a3a57e227fb49ca095445',
   requirements: 'Windows 10 / 11（64 位 x64）· 约 800 MB 可用磁盘空间 · 无需预先安装 Node.js 或配置命令行',
 };
 
@@ -27,17 +29,17 @@ export const packages = [
     id: 'installer',
     badge: '推荐给绝大多数用户',
     title: 'Windows 图形安装版 (.exe)',
-    fileName: 'Bangumi-Analyzer-Companion-Setup-2.0.0-rc4-win-x64.exe',
-    size: '199.1 MB（208,786,432 字节）',
-    sha256: 'd4115df331ff2c7e4bc8817604fdca9d4a153a6bcac01927bb3b46da80181047',
-    url: 'https://github.com/youshengyueye523-code/bangumi-analyzer-app/releases/download/v2.0.0-rc4/Bangumi-Analyzer-Companion-Setup-2.0.0-rc4-win-x64.exe',
+    fileName: 'Bangumi-Analyzer-Companion-Setup-2.0.0-rc5-win-x64.exe',
+    size: '199.1 MB（208,790,016 字节）',
+    sha256: '86aea41aeb02fea6df6a48c335954a34f8f58787ca95d44ac8679a439278266d',
+    url: 'https://github.com/youshengyueye523-code/bangumi-analyzer-app/releases/download/v2.0.0-rc5/Bangumi-Analyzer-Companion-Setup-2.0.0-rc5-win-x64.exe',
     cta: '下载安装版 (.exe)',
     primary: true,
     summary:
       '双击按图形向导完成安装，自动创建开始菜单与桌面快捷方式，并在系统「应用和功能」中提供默认保留用户数据的独立卸载程序。',
     points: [
-      '内置完整 Analyzer v2.0.0 (r3) 与独立 Node 24 运行时，免配置环境',
-      'Companion 偏好存放在用户本地应用数据目录（%LOCALAPPDATA%），Analyzer 数据库存在你选定的独立目录',
+      '内置完整 Analyzer v2.0.0 (r4)（Series Engine v3）与独立 Node 24 运行时，免配置环境',
+      '支持欢迎页「连接已有安装」恢复老安装、旧库首次启动自动一次性升级系列标题与 7 类 Bangumi 网络诊断',
       '默认卸载仅移除程序与快捷方式，完整保留 data/ 下的数据库与历史备份',
     ],
   },
@@ -45,14 +47,14 @@ export const packages = [
     id: 'portable',
     badge: '绿色免安装 / 可移动目录',
     title: 'Windows 绿色便携版 (.zip)',
-    fileName: 'Bangumi-Analyzer-Companion-Portable-2.0.0-rc4-win-x64.zip',
-    size: '199.0 MB（208,664,736 字节）',
-    sha256: 'f5e25f10f2544b3cfe8253c83b7a7ebb99eca86435db3515989d70cc9a9e7f59',
-    url: 'https://github.com/youshengyueye523-code/bangumi-analyzer-app/releases/download/v2.0.0-rc4/Bangumi-Analyzer-Companion-Portable-2.0.0-rc4-win-x64.zip',
+    fileName: 'Bangumi-Analyzer-Companion-Portable-2.0.0-rc5-win-x64.zip',
+    size: '199.0 MB（208,668,176 字节）',
+    sha256: 'fcef14985c97308a8c32ff3189a5a4317834d51f2805b95867a817327553f496',
+    url: 'https://github.com/youshengyueye523-code/bangumi-analyzer-app/releases/download/v2.0.0-rc5/Bangumi-Analyzer-Companion-Portable-2.0.0-rc5-win-x64.zip',
     cta: '下载便携版 (.zip)',
     primary: false,
     summary:
-      '包含完整 644 个运行文件的可运行压缩包（非源码 ZIP）。解压后直接双击 Bangumi-Analyzer-Companion.exe 启动，不写系统卸载项。',
+      '包含完整 645 个运行文件的可运行压缩包（非源码 ZIP）。解压后直接双击 Bangumi-Analyzer-Companion.exe 启动，不写系统卸载项。',
     points: [
       '解压顶级目录为 Bangumi-Analyzer-Companion-Portable-win-x64/',
       'Companion 自身配置随目录存放在 companion-data/，便于整目录迁移或备份',
@@ -118,7 +120,7 @@ export const troubleshootingAndSafety = [
   {
     title: '未签名提示、更新机制与许可边界',
     items: [
-      '未签名安装器说明：本 `v2.0.0-rc4` 预发行包尚未进行 Authenticode 商业代码签名，Windows SmartScreen 首次运行可能弹出「未知发布者」提示。请先核对官方 `SHA256SUMS.txt` 确认文件完整后再决定是否运行，切勿关闭 Windows Defender 或全局禁用 SmartScreen。',
+      '未签名安装器说明：本 `v2.0.0-rc5` 预发行包尚未进行 Authenticode 商业代码签名，Windows SmartScreen 首次运行可能弹出「未知发布者」提示。请先核对官方 `SHA256SUMS.txt` 确认文件完整后再决定是否运行，切勿关闭 Windows Defender 或全局禁用 SmartScreen。',
       '更新机制说明：当前尚未开启自动静默联网更新；需要升级时可从 GitHub Releases 下载新版，或在「维护与诊断」中使用本地更新包/清单执行带失败回滚的安全更新。',
       '许可区分：Analyzer 与 Companion 自主源码采用 MIT 许可；小番基底模型 Pink Sakura 及衍生 ArmRig 图集采用 CC BY 4.0（详见随包 `ATTRIBUTION.md`）；Live2D Cubism Core (`live2dcubismcore.min.js`) 为 Live2D Inc. 专有运行库，不包含于公开源码仓库，编译版按个人小规模免费分发条款随附并附带 `CORE-LICENSE.md`（Companion 锁定内置固定角色，非可扩展导入工具）。',
     ],

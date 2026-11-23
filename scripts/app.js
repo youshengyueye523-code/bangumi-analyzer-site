@@ -317,6 +317,7 @@ function downloadView() {
         <div class="hero-actions" style="margin-top: 14px">
           <a class="button" href="${escapeHtml(release.releaseUrl)}" target="_blank" rel="noopener noreferrer">GitHub Release ${escapeHtml(release.releaseTag)} ↗</a>
           <a class="button" href="${escapeHtml(release.checksumsUrl)}" target="_blank" rel="noopener noreferrer">查看 SHA256SUMS.txt ↗</a>
+          ${release.previousReleaseUrl ? `<a class="button ghost" href="${escapeHtml(release.previousReleaseUrl)}" target="_blank" rel="noopener noreferrer">历史版本 ${escapeHtml(release.previousReleaseTag)} ↗</a>` : ''}
           <a class="button ghost" href="${escapeHtml(release.repoUrl)}" target="_blank" rel="noopener noreferrer">GitHub 源码仓库 ↗</a>
           <a class="button ghost" href="${escapeHtml(publicDemo.url)}" target="_blank" rel="noopener noreferrer">先体验在线只读 Demo ↗</a>
         </div>
