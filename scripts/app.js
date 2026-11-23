@@ -113,10 +113,10 @@ function homeView() {
         </div>
       </div>
       <div class="hero-stage enter delay-1">
-        ${device({ src: 'assets/shots/dashboard-v2-dark.webp', alt: 'Bangumi Analyzer v2.0.0 (r3) 仪表盘（公开示例数据 · 深色主题）', eager: true })}
+        ${device({ src: 'assets/shots/dashboard-v2-dark.png', alt: 'Bangumi Analyzer v2.0.0 (r3) Windows 实机原图（公开展品只读快照 · 深色主题）', eager: true })}
         <figcaption class="device-caption">
-          <span>Analyzer v2.0.0 (r3) 实机画面（示例数据）· 深色主题</span>
-          <span>蓝色氛围背景 · 所有分析都读取本地数据库</span>
+          <span>Analyzer v2.0.0 (r3) Windows 实机原图（公开展品只读快照）· 深色主题</span>
+          <span>2.5K 原始分辨率无损呈现 · 所有分析均基于本地 SQLite</span>
         </figcaption>
       </div>
     </section>
@@ -498,7 +498,7 @@ function demoSection() {
 }
 
 const shots = [
-  { id: 'dashboard-v2', title: '仪表盘 · v2.0.0', note: 'v2.0.0 (r3) 示例 · 蓝色氛围背景、完整统计与左下角用户卡片' },
+  { id: 'dashboard-v2', ext: 'png', title: '仪表盘 · v2.0.0', note: 'v2.0.0 (r3) Windows 实机原图（公开展品只读快照）· 完整统计图表与侧边栏' },
   { id: 'analysis', title: '统计分析 · v2.0.0', note: 'v2.0.0 示例 · 年度趋势：统一精读范围、摘要和归集数量' },
   {
     id: 'diagnostics',
@@ -541,14 +541,14 @@ function shotsView() {
           <span class="demo-hint" data-shot-note>${escapeHtml(shots[0].note)}</span>
         </div>
 
-        <div data-shot-stage>${device({ src: `assets/shots/${shots[0].id}-dark.webp`, alt: shots[0].title })}</div>
+        <div data-shot-stage>${device({ src: `assets/shots/${shots[0].id}-dark.${shots[0].ext ?? 'webp'}`, alt: shots[0].title })}</div>
 
         <div class="thumbs" role="group" aria-label="页面">
           ${shots
             .map(
               (shot, index) => `
             <button class="thumb" type="button" data-shot-id="${shot.id}" aria-pressed="${index === 0}">
-              <img src="assets/shots/${shot.id}-dark.webp" alt="" loading="lazy" />
+              <img src="assets/shots/${shot.id}-dark.${shot.ext ?? 'webp'}" alt="" loading="lazy" />
               ${escapeHtml(shot.title)}
             </button>`,
             )
@@ -1165,7 +1165,7 @@ function setupViewer() {
 
   const paint = () => {
     const shot = shots.find((item) => item.id === current) ?? shots[0];
-    stage.innerHTML = device({ src: `assets/shots/${shot.id}-${theme}.webp`, alt: shot.title });
+    stage.innerHTML = device({ src: `assets/shots/${shot.id}-${theme}.${shot.ext ?? 'webp'}`, alt: shot.title });
     note.textContent = shot.note;
     for (const thumb of thumbs) {
       thumb.setAttribute('aria-pressed', String(thumb.dataset.shotId === current));
