@@ -456,9 +456,6 @@ h3.card-title {
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 16 / 10;
-  object-fit: contain;
-  object-position: top center;
 }
 
 .device-caption {
@@ -744,8 +741,8 @@ h3.card-title {
 .thumb img {
   width: 100%;
   aspect-ratio: 16 / 10;
-  object-fit: cover;
-  object-position: top center;
+  object-fit: contain;
+  background: var(--bg-elevated);
   border-radius: var(--radius-chip);
   margin-bottom: 6px;
 }
