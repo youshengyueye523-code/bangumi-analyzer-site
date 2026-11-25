@@ -12,35 +12,35 @@
 
 export const website = {
   name: 'Bangumi Analyzer 产品展示与项目档案网站',
-  version: '1.2.0',
-  date: '2026-11-23',
+  version: '1.2.1',
+  date: '2026-11-25',
   /** 本站当前记录到的 Analyzer 版本 */
   analyzer: '2.0.0',
-  /** 本站当前记录到的 Companion 公开预发行版本 */
-  companion: '2.0.0-rc5',
+  /** 本站当前记录到的 Companion 正式发行版本 */
+  companion: '2.0.0',
 };
 
 /** 四条独立版本事实（档案页用来说明关系，彼此独立演进） */
 export const versionSeries = [
   [
     'Analyzer',
-    `v1.0.0 → … → v1.9.0 → v${website.analyzer} (r4)`,
-    '产品本体：功能、数据契约与界面。v2.0.0 (r4) 包含 r3 系列自动标题判定契约与 Series Engine v3 一次性升级兜底，随 Companion 发行包交付；版本历史在时间线与版本页。',
+    `v1.0.0 → … → v1.9.0 → v${website.analyzer} (r5)`,
+    '产品本体：功能、数据契约与界面。v2.0.0 (r5) 保留 r3/r4 系列自动标题判定契约与 Series Engine v3 一次性升级兜底，并支持 Companion 托管的跨端口网页端深浅色主题同步；版本历史在时间线与版本页。',
   ],
   [
     'Companion',
-    `v${website.companion}（Pre-release）`,
-    'Windows 桌面伴侣与图形安装器：内置 Analyzer v2.0.0 (r4) 独立运行时、老安装重连、7 类网络诊断、首次向导失败恢复、小番 Live2D 随机互动与备份卸载管理（历史版本 v2.0.0-rc4 保留归档）。',
+    `v${website.companion}（Stable 正式版）`,
+    'Windows 桌面伴侣与图形安装器：内置 Analyzer v2.0.0 (r5) 独立运行时，修复首页 6 个快捷入口路由、跨随机端口网页主题持久化、高 DPI 窗口与 Live2D 稳定性及启动自动打开网页，保留历史 RC3/RC4/RC5 归档。',
   ],
   [
     'Website',
-    `v1.0.0 → … → v1.1.0 → v${website.version}`,
+    `v1.0.0 → … → v1.2.0 → v${website.version}`,
     `本站：产品展示、Windows 下载入口与项目档案（独立 GitHub Pages 静态站），当前为 v${website.version}。`,
   ],
   [
     'Public Demo',
     'Analyzer v2.0.0 快照（Vercel 只读）',
-    '独立只读公开展品：2026.09.18 首发于 v1.5.0，2026.11.18 独立升级至 v2.0.0 快照；不随本地或 Companion 自动更新。',
+    '独立只读公开展品：2026.09.18 首发于 v1.5.0，2026.11.18 独立升级至 v2.0.0 快照；不随本地、Companion 或 Website 自动更新。',
   ],
 ];
 
@@ -52,6 +52,29 @@ export const versionPolicy = [
 ];
 
 export const websiteVersions = [
+  {
+    version: '1.2.1',
+    date: '2026-11-25',
+    title: 'Windows v2.0.0 正式版下载切换与常见问题（FAQ）专节',
+    summary:
+      '将下载页正式切换至 Bangumi Analyzer v2.0.0 Stable（内置 Analyzer v2.0.0 r5）安装包、便携版与独立离线核心包直链，在 #/download 新增常见问题（FAQ）专节并保留既有 2.5K 实机截图、RC 历史档案及独立的 Public Demo。',
+    sections: [
+      {
+        title: '新增与同步',
+        items: [
+          '同步 `#/download` 与首页桌面伴侣入口至 `v2.0.0` Stable 正式版（Companion `2.0.0` + Analyzer `v2.0.0 r5`，构建 `v2.0.0-202611250823`），提供 Setup `.exe`、Portable `.zip` 与独立核心包 `Bangumi-Analyzer-2.0.0-windows-x64-r5.zip` 的真实字节大小、SHA-256 摘要及 GitHub Releases 附件直链（历史入口链接至 `v2.0.0-rc5` 归档）。',
+          '在 `#/download` 新增 `#faq` 常见问题专节，明确说明：普通用户无需单独下载 Live2D Core、网页端主题设置与跨端口持久化方式、服务就绪后自动打开网页设置、首页六个直达快捷入口、升级保留 `data/` 与备份回退机制，以及未签名 SmartScreen / 仅支持 Windows x64 等客观限制。',
+          '为既有首页、界面与下载页 2.5K 实机截图补充严谨的采集版本标注（`Analyzer v2.0.0 r3` / `Companion v2.0.0-rc4` 示例数据快照），不重绘或伪造历史截图。',
+        ],
+      },
+      {
+        title: '边界与验证',
+        items: [
+          'Public Demo 页面、地址、内容与 Vercel 部署保持独立不变；同步更新 `verify.mjs` 校验规则并完成静态子集独立部署与暗浅双色窄屏走查。',
+        ],
+      },
+    ],
+  },
   {
     version: '1.2.0',
     date: '2026-11-23',

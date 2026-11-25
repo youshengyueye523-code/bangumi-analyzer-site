@@ -28,13 +28,13 @@ export const publicDemo = {
 export const demoEntities = [
   [
     'Local Analyzer',
-    `v${website.analyzer} (r3)`,
-    '产品本体：本地工作环境与 Windows 便携核心（r3 已恢复系列自动标题判定契约），独立演进。',
+    `v${website.analyzer} (r5)`,
+    '产品本体：本地工作环境与 Windows 便携核心（包含 r3 系列自动标题判定契约、Series Engine v3 及 Companion 主题桥接），独立演进。',
   ],
   [
     'Companion',
     `v${website.companion}`,
-    'Windows 桌面伴侣与图形安装器（Pre-release）：面向普通用户打包交付 Analyzer 核心、小番 Live2D 与维护管理。',
+    'Windows 桌面伴侣与图形安装器（Stable 正式版）：面向普通用户打包交付 Analyzer v2.0.0 (r5) 核心、小番 Live2D 与维护管理。',
   ],
   [
     'Public Demo',

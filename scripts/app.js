@@ -22,6 +22,7 @@ import {
 } from './content/public-demo.js';
 import {
   companionHighlights,
+  downloadFaq,
   packages,
   release,
   setupSteps,
@@ -184,7 +185,7 @@ function homeView() {
             barLabel: 'Bangumi Analyzer Companion',
           })}
           <figcaption class="device-caption">
-            <span>Companion v${escapeHtml(release.companionVersion)} 真实运行画面（示例数据）</span>
+            <span>Companion 真实运行画面（v2.0.0-rc4 实机采集 · 示例数据）</span>
             <span>小番 Live2D · 本地服务托管</span>
           </figcaption>
         </div>
@@ -314,8 +315,13 @@ function downloadView() {
           请在下载后核对 <code>SHA256SUMS.txt</code>（PowerShell 运行 <code>Get-FileHash &lt;文件名&gt; -Algorithm SHA256</code>）。
           <strong>请勿将 GitHub 自动生成的 <code>Source code (zip)</code> 当作可运行安装包。</strong>
         </p>
+        <p class="entry-meta" style="margin-top: 8px; overflow-wrap: anywhere">
+          独立 Analyzer 离线核心（供「维护与诊断 → 安全更新」或已有核心替换使用）：<code>${escapeHtml(release.analyzerFileName)}</code>
+          （${escapeHtml(release.analyzerSize)} · SHA-256：<code>${escapeHtml(release.analyzerSha256)}</code>）
+        </p>
         <div class="hero-actions" style="margin-top: 14px">
           <a class="button" href="${escapeHtml(release.releaseUrl)}" target="_blank" rel="noopener noreferrer">GitHub Release ${escapeHtml(release.releaseTag)} ↗</a>
+          <a class="button" href="${escapeHtml(release.analyzerUrl)}" target="_blank" rel="noopener noreferrer">下载离线核心 (.zip) ↗</a>
           <a class="button" href="${escapeHtml(release.checksumsUrl)}" target="_blank" rel="noopener noreferrer">查看 SHA256SUMS.txt ↗</a>
           ${release.previousReleaseUrl ? `<a class="button ghost" href="${escapeHtml(release.previousReleaseUrl)}" target="_blank" rel="noopener noreferrer">历史版本 ${escapeHtml(release.previousReleaseTag)} ↗</a>` : ''}
           <a class="button ghost" href="${escapeHtml(release.repoUrl)}" target="_blank" rel="noopener noreferrer">GitHub 源码仓库 ↗</a>
@@ -377,6 +383,25 @@ function downloadView() {
             <span>约 3 分钟完成本地初始化</span>
           </figcaption>
         </div>
+      </div>
+    </section>
+
+    <section class="section quiet" id="faq">
+      ${sectionHead(
+        '常见问题 · FAQ',
+        '安装、主题、自动打开与升级高频疑问',
+        '面向日常使用补充 Live2D Core 依赖、主题持久化、快捷入口、升级保留数据及客观限制说明。',
+      )}
+      <div class="grid-2">
+        ${downloadFaq
+          .map(
+            (item) => `
+          <article class="panel">
+            <h2 class="panel-title">${escapeHtml(item.q)}</h2>
+            <p class="entry-body">${prettyText(item.a)}</p>
+          </article>`,
+          )
+          .join('')}
       </div>
     </section>
 

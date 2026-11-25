@@ -71,6 +71,7 @@ export const versions = [
         items: [
           '正式私人 Local 从 Schema 13 升到 15；先演练含 WAL 的一致快照及旧版恢复，再受控迁移。内置 AI 和翻译 Worker 在首验后恢复；本次迁移未回滚，未以付费远端调用作探测。',
           '私人 Local 的功能验收、内部形式化发布证明、公开分发是三个范围。Final Gate 的 393 条是覆盖声明，不是 393 个产品缺陷；未因本次私人升级而获整体通过。11 月 17 日完成 Local 迁移时 Public Demo 尚未升级（后于 2026-11-18 独立升级至 v2.0.0 快照，见项目档案）。',
+          '2026-11-25 完成公开稳定版分发同步：发布 Companion v2.0.0 Stable 与 Analyzer v2.0.0 (r5)（保留 RC3 / RC4 / RC5 历史归档与独立只读 Public Demo）。',
         ],
       },
     ],
@@ -126,6 +127,11 @@ export const versions = [
         date: '2026-11-18',
         title: '按实际使用结果定版分析和展示口径',
         body: '恢复历史 AI 总结与完整分析并修正 Fetch；随后处理历史下拉和 Dashboard 缓存，确认分析与展示分别遵循各自规则。用户完成最终视觉及功能验收，版本仍为 v2.0.0。',
+      },
+      {
+        date: '2026-11-25',
+        title: '完成 Companion 与 Analyzer v2.0.0 正式版稳定性收尾（r5）',
+        body: '围绕日常桌面使用中的四项真实问题（首页六个直达入口路由、跨随机端口网页端深浅色主题持久化、Windows 高 DPI 窗口状态切换与 Live2D/WebGL 稳定性、服务就绪后自动打开网页端）完成定向修复、回归验证与 Windows 11 实机连续状态切换验收，正式发行 Companion v2.0.0 与 Analyzer v2.0.0 (r5)。',
       },
     ],
   },

@@ -241,22 +241,36 @@ try {
     '本地运行说明与 serve.mjs 行为一致（node serve.mjs / 127.0.0.1:8789）',
   );
 
-  /* 2f) Windows 下载页、直链与 Companion 展示检查 */
+  /* 2f) Windows 下载页、直链、FAQ 与 Companion 展示检查 */
   await page.goto(`${base}#/download`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(300);
   const downloadText = await page.locator('#view').innerText();
   check(
-    downloadText.includes('Bangumi-Analyzer-Companion-Setup-2.0.0-rc4-win-x64.exe') &&
-      downloadText.includes('Bangumi-Analyzer-Companion-Portable-2.0.0-rc4-win-x64.zip') &&
-      downloadText.includes('d4115df331ff2c7e4bc8817604fdca9d4a153a6bcac01927bb3b46da80181047'),
-    '下载页列出安装版、便携版与真实 SHA-256 摘要',
+    downloadText.includes('Bangumi-Analyzer-Companion-Setup-2.0.0-win-x64.exe') &&
+      downloadText.includes('Bangumi-Analyzer-Companion-Portable-2.0.0-win-x64.zip') &&
+      downloadText.includes('Bangumi-Analyzer-2.0.0-windows-x64-r5.zip') &&
+      downloadText.includes('6e8cc079234e2da9fc0143b2530977e8e215e949ee89375993e1ae0f363a2a1c') &&
+      downloadText.includes('24950a5ab67d673bf0451e5f0914709592ca69af20f5e7bd5b9f004255b70387') &&
+      downloadText.includes('b227f6632c9060642444e550e2bc3f2256450bad2e3c4b0420d00e31ed77bcfa'),
+    '下载页列出 v2.0.0 安装版、便携版、独立核心包与真实 SHA-256 摘要',
+  );
+  check(
+    downloadText.includes('普通用户需要单独下载 Live2D Core 吗') &&
+      downloadText.includes('不需要。') &&
+      downloadText.includes('Analyzer 网页端主题') &&
+      downloadText.includes('服务启动后自动打开网页端') &&
+      downloadText.includes('直达入口') &&
+      downloadText.includes('SmartScreen'),
+    '下载页 FAQ 涵盖 Live2D Core、网页端主题、自动打开、快捷入口、数据保留与客观限制',
   );
   const exeHref = await page.getByRole('link', { name: /下载安装版/ }).getAttribute('href');
   const zipHref = await page.getByRole('link', { name: /下载便携版/ }).getAttribute('href');
+  const r5Href = await page.getByRole('link', { name: /下载离线核心/ }).getAttribute('href');
   check(
-    Boolean(exeHref?.includes('/releases/download/v2.0.0-rc4/Bangumi-Analyzer-Companion-Setup-2.0.0-rc4-win-x64.exe')) &&
-      Boolean(zipHref?.includes('/releases/download/v2.0.0-rc4/Bangumi-Analyzer-Companion-Portable-2.0.0-rc4-win-x64.zip')),
-    '下载按钮指向明确的 v2.0.0-rc4 Release 附件直链（不依赖 releases/latest）',
+    Boolean(exeHref?.includes('/releases/download/v2.0.0/Bangumi-Analyzer-Companion-Setup-2.0.0-win-x64.exe')) &&
+      Boolean(zipHref?.includes('/releases/download/v2.0.0/Bangumi-Analyzer-Companion-Portable-2.0.0-win-x64.zip')) &&
+      Boolean(r5Href?.includes('/releases/download/v2.0.0/Bangumi-Analyzer-2.0.0-windows-x64-r5.zip')),
+    '下载按钮指向明确的 v2.0.0 Release 附件直链（不依赖 releases/latest）',
   );
 
   /* 3) 动效预算：进入首页 1.6s 后不应存在持续运行的动画 */

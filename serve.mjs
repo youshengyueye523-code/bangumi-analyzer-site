@@ -13,9 +13,9 @@
  *   node site/serve.mjs --open         # 启动后自动打开浏览器
  */
 
-import { createReadStream, existsSync, statSync } from 'node:fs';
+import { createReadStream, existsSync, realpathSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
-import { extname, join, normalize, resolve } from 'node:path';
+import { extname, isAbsolute, join, normalize, relative, resolve, sep } from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -61,14 +61,28 @@ const MIME = {
 
 /** 把 URL 路径解析为站点目录内的真实文件；越界一律拒绝。 */
 function resolveFile(pathname) {
-  const decoded = decodeURIComponent(pathname.split('?')[0]);
-  const relative = normalize(decoded).replace(/^([/\\])+/, '');
-  const target = join(ROOT, relative);
-  if (!target.startsWith(ROOT)) return null;
-  if (existsSync(target) && statSync(target).isFile()) return target;
-  // 没有扩展名的路径回退到首页（方便直接输入 /versions 这类地址）
-  if (!extname(relative)) return join(ROOT, 'index.html');
-  return null;
+  try {
+    const decoded = decodeURIComponent(pathname.split('?')[0]);
+    const requested = normalize(decoded).replace(/^([/\\])+/, '');
+    const target = join(ROOT, requested);
+    const insideRoot = (path) => {
+      const difference = relative(ROOT, path);
+      return !isAbsolute(difference) && difference !== '..' && !difference.startsWith(`..${sep}`);
+    };
+    if (!insideRoot(target)) return null;
+    if (existsSync(target)) {
+      // 链接也必须解析到站点内部，不能借 junction / symlink 读取站外资产。
+      if (!insideRoot(realpathSync(target))) return null;
+      if (statSync(target).isFile()) return target;
+    }
+    // 没有扩展名的路径回退到首页（方便直接输入 /versions 这类地址）
+    const homepage = join(ROOT, 'index.html');
+    if (!extname(requested) && insideRoot(realpathSync(homepage)) && statSync(homepage).isFile()) return homepage;
+    return null;
+  } catch {
+    // 畸形百分号编码、空字节或文件消失不能让整个本地服务退出。
+    return null;
+  }
 }
 
 const server = createServer((request, response) => {
@@ -84,7 +98,9 @@ const server = createServer((request, response) => {
     // 开发期不做长缓存，避免改了 CSS / 内容看不到变化
     'cache-control': 'no-cache',
   });
-  createReadStream(file).pipe(response);
+  const stream = createReadStream(file);
+  stream.on('error', () => response.destroy());
+  stream.pipe(response);
 });
 
 let attempt = 0;
